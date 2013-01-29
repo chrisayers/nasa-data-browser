@@ -1,3 +1,39 @@
-#left {	float: left; }
-#right { float: right; }
-.ui-menu { width: 200px; }
+#left {	
+    float: left;
+    margin: 20px;
+}
+#middle { 
+    float: left;
+    display: inline-block;
+    height: 90%;
+    width: 25%;
+    margin: 20px;
+    overflow: auto;
+}
+#right { 
+    float: right;
+    display: inline-block;
+    height: 90%;
+    width: 40%;
+    margin: 20px;
+    overflow: auto;
+}
+.filterValues {
+    margin-bottom: 10px;
+}
+.variable {
+    border-bottom: solid 1px #d6d6d6;
+    padding: 8px 0px 5px 0px;
+    vertical-align: top;
+}
+.detail {
+    padding: 10px 0px 10px 0px;
+    vertical-align: top;
+}
+.wordwrap {
+    width: 20em;
+    word-wrap: normal|break-word;
+}
+.indented {
+    padding-left: 2em;
+}
