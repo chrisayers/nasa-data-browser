@@ -2,22 +2,28 @@
   (:use compojure.core)
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
-            [clojure.data.json :as json]
-            [nasa-data-browser.hierarchy :as hierarchy]
+            [nasa-data-browser.topics :as topics]
             [nasa-data-browser.variables :as variables]
+            [nasa-data-browser.info :as info]
+            [nasa-data-browser.utils :as u]
             ))
-
-(def endpoint "http://localhost:8080/openrdf-sesame/repositories/nasa")
-
-(defn json-response [data & [status]]
-  {:status (or status 200)
-   :headers {"Content-Type" "application/json"}
-   :body (json/write-str data)})
-
+(comment
+  (def endpoint "http://localhost:8080/openrdf-sesame/repositories/nasa"))
+(def endpoint "http://sesame-sleepydog.elasticbeanstalk.com/repositories/nasa")
 (defroutes app-routes
   (route/files "/" {:root "public"})
-  (GET "/hierarchy" [] (-> endpoint hierarchy/get-data json-response))
-  (GET "/variables" [] (-> endpoint variables/get-data json-response))
+  (GET "/topics" []
+       (-> endpoint
+           topics/get-data
+           u/json-response))
+  (GET "/variables:parameter" [parameter]
+       (-> endpoint
+           (variables/get-data parameter ,,,)
+           u/json-response))
+  (GET "/info:variable" [variable]
+       (-> endpoint
+           (variables/get-data variable ,,,)
+           u/json-response))
   (route/not-found "Not Found"))
   
 (def app
