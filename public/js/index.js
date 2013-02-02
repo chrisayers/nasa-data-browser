@@ -11,58 +11,36 @@ var filterIndex= {};
 var accordionOptions= {collapsible: true,
 		active: false,
 		heightStyle: "content"}
+var getTopicsContent;
 
 $(document).ready(setup);
 
 function setup() { 
-	if (jQuery.browser.mobile) { window.location.replace(appUrl+'/mobile.html'); }
-	else { getTopics(); }
+    getTopicsContent= Handlebars.compile(topicsTemplate);
+    if (jQuery.browser.mobile) { window.location.replace(appUrl+'/mobile.html'); }
+    else { getTopics(); }
 }
 function getTopics() { 
 	$.getJSON(topicsUrl, setTopics); 
 }
 function setTopics(data) {
-	names= data.names;
-	filters= data.filters;
-	filterValues= data.filterValues;
-	$.each(data.topics, addTopic);
-	$('#topics').accordion(accordionOptions);
-	$('#topics h3').live('click', function () {
-		clearCheckboxes();
-		clearDetails();
-		var parameter= $(this).text();
-		var opening= $(this).hasClass('ui-state-active');
-		if (opening) { getVariables(parameter); }
-		else { $('#variables').empty(); }
-	});
+    $('#topics').html(getTopicsContent(data));
+    $('#topics').accordion(accordionOptions);
+    $('#topics h3').live('click', function () {
+	clearCheckboxes();
+	clearDetails();
+	var parameter= $(this).text();
+	var opening= $(this).hasClass('ui-state-active');
+	if (opening) { getVariables(parameter); }
+	else { $('#variables').empty(); }
+    });
 }
 function clearCheckboxes() {
 	$('.filterValues').find(':checked').each(function() {
 		$(this).removeAttr('checked');
 	});
 }
-function addTopic(index, topic) {
-	var text= '<h3>'+topic+'</h3>';
-	text+= '<div>';
-	text+= filters[topic].map(addFilters).join('');
-	text+= '</div>';
-	$('#topics').append(text);
-}
-function addFilters(filter) {
-	var text= '<div class="filterValues">';
-	text+= '<strong id="'+filter+'">'+name(filter)+'</strong><br>';
-	var pairs= filterValues[filter].map(function(fv) { return [filter, fv]; });
-	text+= pairs.map(addFilterValues).join('');
-	text+= '</div>';
-	return text;
-}
-function addFilterValues(pair) {
-	var filter= pair[0];
-	var filterValue= pair[1];
-	var text= '<input type="checkbox" value="'+[filter, filterValue]+'"/>';
-	text += '<label for="'+filterValue+'">'+filterValue+'</label><br>';
-	return text;
-}
+
 function name(obj) {
 	if (obj in names) { return names[obj]; }
 	else return obj;

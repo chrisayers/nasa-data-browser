@@ -17,7 +17,7 @@ select distinct ?topic ?filter ?filterValue
   bind (strafter(str(?filterValueUri), '#') as ?filterValue)
   bind (concat(?topic, '#', ?filter) as ?relativeFilter)
 } order by ?topicLabel ?topic
-"))     
+"))
 (defn get-data [endpoint]
   (let [facts (:data (bounce hierarchy-query endpoint))
         topics (into #{} (map :topic facts))
@@ -26,10 +26,17 @@ select distinct ?topic ?filter ?filterValue
         name-sets (merge-with
                    u/set-union
                    (u/build-relation :topic :topicLabel facts)
-                   (u/build-relation :filter :filterLabel facts)
+                   (u/build-relation :relativeFilter :filterLabel facts)
                    (u/build-relation :filterValue :filterValueLabel facts))
         names (u/map-on-vals name-sets u/from-set)]
-    {"topics" topics
-     "filters" filters
-     "filterValues" filter-values
-     "names" names}))
+    (letfn [(get-filter [f]
+              (let [name (get names f)]
+                {"filter" f
+                 "name" (if (nil? name) f name)
+                 "values" (get filter-values f)}))
+            (get-filters [t] (map get-filter (get filters t)))
+            (get-topic [t]
+              (let [name (get names t)]
+                {"topic" (if (nil? name) t name)
+                 "filters" (get-filters t)}))]
+      {"topics" (map get-topic topics)})))
