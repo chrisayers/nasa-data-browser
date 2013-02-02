@@ -20,12 +20,13 @@ select distinct ?variable ?shortName ?paramName ?filterObject {
 "))
 
 (defn get-variable-info [result]
-  {"variable" (:variable result)
-   "shortName" (:shortName result)
-   "paramName" (:paramName result)})
+  (let [var (:variable result)]
+    [var { "variable" (:variable result)
+           "shortName" (:shortName result)
+           "paramName" (:paramName result)}] ))
 (defn get-data [parameter endpoint]
   (let [facts (-> parameter query (bounce ,,, endpoint) :data)
-        variables (map get-variable-info facts)
+        variables (into {} (map get-variable-info facts))
         filters (u/build-relation :filterObject :variable facts)]
     {"variables" variables
      "filterIndex" filters}))

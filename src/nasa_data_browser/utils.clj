@@ -13,9 +13,9 @@
 (defn set-union [s1 s2]
   (set/union (to-set s1) (to-set s2)))
 (defn pull-relation [parent-key child-key m]
-  {(get m parent-key) (get m child-key)})
+  {(get m parent-key) (-> (get m child-key) to-set)})
 (defn build-relation [parent-key child-key result-set]
-  (reduce #(merge-with set-union %1 %2)
+  (reduce #(merge-with set/union %1 %2)
           {}
           (map #(pull-relation parent-key child-key %1) result-set)))
 (defn json-response [data & [status]]

@@ -15,7 +15,10 @@ select distinct ?predicate ?object ?lit {
  ?predicateUri a :ESProperty . 
  optional { ?objectUri rdfs:label ?lit }
  bind (strafter(str(?predicateUri), '#') as ?predicate)
- bind (strafter(str(?objectUri), '#') as ?object)
+ bind ( if(contains(?objectUri, '#'), 
+           strafter(str(?objectUri), '#'),
+           ?objectUri)
+        as ?object)
 } order by ?predicate ?object
 "))
 (defn get-data [variable endpoint]
