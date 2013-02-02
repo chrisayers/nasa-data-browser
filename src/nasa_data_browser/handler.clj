@@ -7,22 +7,18 @@
             [nasa-data-browser.info :as info]
             [nasa-data-browser.utils :as u]
             ))
-(comment
-  (def endpoint "http://localhost:8080/openrdf-sesame/repositories/nasa"))
+(comment (def endpoint "http://localhost:8080/openrdf-sesame/repositories/nasa"))
 (def endpoint "http://sesame-sleepydog.elasticbeanstalk.com/repositories/nasa")
 (defroutes app-routes
   (route/files "/" {:root "public"})
   (GET "/topics" []
-       (-> endpoint
-           topics/get-data
+       (-> (topics/get-data endpoint)
            u/json-response))
-  (GET "/variables:parameter" [parameter]
-       (-> endpoint
-           (variables/get-data parameter ,,,)
+  (GET "/variables" [parameter]
+       (-> (variables/get-data parameter endpoint)
            u/json-response))
-  (GET "/info:variable" [variable]
-       (-> endpoint
-           (variables/get-data variable ,,,)
+  (GET "/info" [variable]
+       (-> (info/get-data variable endpoint)
            u/json-response))
   (route/not-found "Not Found"))
   

@@ -4,9 +4,7 @@
 
 (defn name-query [variable]
   (str u/prefix "
-select distinct ?label { 
- ?variable rdfs:label ?label . 
- filter(?variable = :"variable") }
+select distinct ?label { :"variable" rdfs:label ?label }
 "))
 (defn fact-query [variable]
   (str u/prefix "
@@ -15,14 +13,14 @@ select distinct ?predicate ?object ?lit {
  ?predicateUri a :ESProperty . 
  optional { ?objectUri rdfs:label ?lit }
  bind (strafter(str(?predicateUri), '#') as ?predicate)
- bind ( if(contains(?objectUri, '#'), 
+ bind ( if(contains(str(?objectUri), '#'), 
            strafter(str(?objectUri), '#'),
            ?objectUri)
         as ?object)
 } order by ?predicate ?object
 "))
 (defn get-data [variable endpoint]
-  (let [name (-> variable name-query (bounce ,,, endpoint) :data :label)
+  (let [name (-> variable name-query (bounce ,,, endpoint) :data first :label)
         facts (-> variable fact-query (bounce ,,, endpoint) :data)]
     {"name" name
      "facts" facts}))

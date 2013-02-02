@@ -186,18 +186,18 @@ function drawFacts(divId, name, facts) {
         if (facts.length === 0) { text+= '<div class="wordrap indented">No further information available</div>'; }
 	else { 
 	    var label= 'unknown';
-	    if (name != '') { label= name; }
+	    if (name) { label= name; }
 	    text+= '<div class="wordwrap indented"><strong>Name: </strong>'+label+'</div>';
             var klass= '';
             if (divId == '#facts') { klass= 'moredetail'; }
 	    text+= '<div class="wordwrap indented"><strong>Facts:</strong>';
 	    text+= facts.map(function(f) {
 		var object= f['object'];
-		var predicate= f['predicate'];
+		var predicate= f['predicate'];		
 		var id= predicate+'-'+object;
 		var txt= '<div class="wordwrap indented">';
 		txt+= '<strong>'+predicate+': </strong>';
-		if (divId == '#facts' && 'lit' in f) { 
+		if (divId == '#facts' && f['lit']) { 
 			txt+= '<a href="#" uuid="'+id+'" class="'+klass+'">'+object+'</a>'; 
 		}
 		else { txt+= object; }
