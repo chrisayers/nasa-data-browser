@@ -1,13 +1,13 @@
 var appUrl= "http://localhost:3000";
 //var appUrl= "http://nasa-sleepydog.elasticbeanstalk.com";
-var topicsUrl= appUrl+"/topics";
+var parametersUrl= appUrl+"/parameters";
 var variablesUrl= appUrl+"/variables";
 var detailsUrl= appUrl+"/info";
 var filterIndex= {};
 var accordionOptions= {collapsible: true,
 		active: false,
 		heightStyle: "content"}
-var getTopicsContent;
+var getParametersContent;
 var getVariablesContent;
 var getInfoContent;
 var getMoreInfoContent;
@@ -16,21 +16,21 @@ var getNoInfoContent;
 $(document).ready(setup);
 
 function setup() { 
-    getTopicsContent= Handlebars.compile(topicsTemplate);
+    getParametersContent= Handlebars.compile(parametersTemplate);
     getVariablesContent= Handlebars.compile(variablesTemplate);
     getInfoContent= Handlebars.compile(infoTemplate);
     getMoreInfoContent= Handlebars.compile(moreInfoTemplate);
     getNoInfoContent= Handlebars.compile(noInfoTemplate);
     if (jQuery.browser.mobile) { window.location.replace(appUrl+'/mobile.html'); }
-    else { getTopics(); }
+    else { getParameters(); }
 }
-function getTopics() { 
-	$.getJSON(topicsUrl, setTopics); 
+function getParameters() { 
+	$.getJSON(parametersUrl, setParameters); 
 }
-function setTopics(data) {
-    $('#topics').html(getTopicsContent(data));
-    $('#topics').accordion(accordionOptions);
-    $('#topics h3').live('click', function () {
+function setParameters(data) {
+    $('#parameters').html(getParametersContent(data));
+    $('#parameters').accordion(accordionOptions);
+    $('#parameters h3').live('click', function () {
 	clearCheckboxes();
 	clearDetails();
 	var parameter= $(this).text();
