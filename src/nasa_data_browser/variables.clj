@@ -19,14 +19,17 @@ select distinct ?variable ?shortName ?paramName ?filterObject {
 } order by ?variable
 "))
 
-(defn get-variable-info [result]
-  (let [var (:variable result)]
-    [var { "variable" (:variable result)
-           "shortName" (:shortName result)
-           "paramName" (:paramName result)}] ))
 (defn get-data [parameter endpoint]
   (let [facts (-> parameter query (bounce ,,, endpoint) :data)
-        variables (into {} (map get-variable-info facts))
+        vars (into #{} (map :variable facts))
+        shorts (u/build-relation :variable :shortName facts)
+        params (u/build-relation :variable :paramName facts)
         filters (u/build-relation :filterObject :variable facts)]
-    {"variables" variables
-     "filterIndex" filters}))
+    (letfn [(get-var-info [var]
+              (let [short (-> (get shorts var) first)
+                    param (-> (get params var) first)]
+                {"uuid" var
+                 "shortName" (if (nil? short) var short)
+                 "paramName" (if (nil? param) var param)}))]
+      {"variables" (map get-var-info vars)
+       "filterIndex" filters})))
