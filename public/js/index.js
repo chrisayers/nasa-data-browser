@@ -1,5 +1,6 @@
 var appUrl= "http://localhost:3000";
 //var appUrl= "http://nasa-sleepydog.elasticbeanstalk.com";
+var templatesUrl= appUrl+"/templates";
 var parametersUrl= appUrl+"/parameters";
 var variablesUrl= appUrl+"/variables";
 var detailsUrl= appUrl+"/info";
@@ -16,18 +17,22 @@ var getNoInfoContent;
 $(document).ready(setup);
 
 function setup() { 
-    getParametersContent= Handlebars.compile(parametersTemplate);
-    getVariablesContent= Handlebars.compile(variablesTemplate);
-    getInfoContent= Handlebars.compile(infoTemplate);
-    getMoreInfoContent= Handlebars.compile(moreInfoTemplate);
-    getNoInfoContent= Handlebars.compile(noInfoTemplate);
     if (jQuery.browser.mobile) { window.location.replace(appUrl+'/mobile.html'); }
     else { getParameters(); }
 }
-function getParameters() { 
-	$.getJSON(parametersUrl, setParameters); 
+function getTemplates(view) {
+    $.getJSON(templatesUrl, {'view': 'desktop'}, getParameters); 
+}
+function setTemplates(data) {
+    getParametersContent= Handlebars.compile(data.templates.parameters);
+    getVariablesContent= Handlebars.compile(data.templates.variables);
+}
+function getParameters(data) { 
+    setTemplates(data);
+    $.getJSON(parametersUrl, setParameters); 
 }
 function setParameters(data) {
+    setTemplates();
     $('#parameters').html(getParametersContent(data));
     $('#parameters').accordion(accordionOptions);
     $('#parameters h3').live('click', function () {
