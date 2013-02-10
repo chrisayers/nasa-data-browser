@@ -13,7 +13,7 @@
 (comment (def endpoint "http://sesame-sleepydog.elasticbeanstalk.com/repositories/nasa"))
 
 (defroutes app-routes
-  (GET "/templates" []       
+  (GET "/templates/:view" [view]       
        (-> (templates/get-data view)
            u/json-response))
   (GET "/parameters" []
