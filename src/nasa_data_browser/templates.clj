@@ -20,21 +20,30 @@
 ")
 
 (def variables-desktop "
-<table id='variables>
- <tr>
-  <td>Variable</td>
-  <td>Parameter</td>
-  <td>Product</td>
- </tr>
-{{#each variables}} 
- <tr>
-  <td> 
-   <input type='checkbox' value='{{uuid}}'/> 
-   <a href='#'>{{variable}}</a> </td>
-  <td> {{parameter}} </td>
-  <td> {{products}} </td>
- </tr>
-{{/each}} 
+<table id='variables'>
+ <thead>
+  <tr>
+   <th>Variable</th>
+   <th>Parameter</th>
+   <th>Products</th>
+  </tr>
+ </thead>
+ <tbody>
+  {{#each variables}} 
+   <tr class='variable' id='varpicker-{{variable}}' var='{{variable}}'>
+    <td> 
+     <input type='checkbox' value='{{variable}}'/> 
+     <a href='#'>{{variableName}}</a> 
+    </td>
+    <td>{{parameterName}}</td>
+    <td>
+     {{#each products}}
+      <a uuid='{{product}}' href='#'>{{name}}</a>
+     {{/each}}
+    </td>
+   </tr>
+  {{/each}} 
+ </tbody>
 </table>
 ")
 

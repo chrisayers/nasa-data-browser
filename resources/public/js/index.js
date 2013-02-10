@@ -1,10 +1,12 @@
-var appUrl= "http://localhost:8080/nasa";
+var appUrl= "http://localhost:3000";
 //var appUrl= "http://nasa-sleepydog.elasticbeanstalk.com";
 var templatesUrl= appUrl+"/templates";
 var parametersUrl= appUrl+"/parameters";
 var variablesUrl= appUrl+"/variables";
 var detailsUrl= appUrl+"/info";
-var filterIndex= {};
+var filterIndex= {}; // filters -> lists of variables
+var productIndex= {}; // variables -> products
+var productNames= {}; // products -> product names
 var accordionOptions= {collapsible: true,
 		active: false,
 		heightStyle: "content"}
@@ -20,7 +22,7 @@ function setup() {
     else { getTemplates('desktop'); }
 }
 function getTemplates(view) {
-    $.getJSON(templatesUrl, {'view': view}, setTemplates); 
+    $.getJSON(templatesUrl+"/"+view, setTemplates); 
 }
 function setTemplates(data) {
     getParametersContent= Handlebars.compile(data.parameters);
@@ -33,7 +35,8 @@ function getParameters() {
     $.getJSON(parametersUrl, setParameters); 
 }
 function setParameters(data) {
-    setTemplates();
+    productIndex= data.hasProduct;
+    productNames= data.hasProductName;
     $('#parameters').html(getParametersContent(data));
     $('#parameters').accordion(accordionOptions);
     $('#parameters h3').live('click', function () {
@@ -45,23 +48,35 @@ function setParameters(data) {
     });
 }
 function getVariables(parameter) {
-	$.getJSON(variablesUrl, {'parameter': parameter}, setVariables);
+	$.getJSON(variablesUrl+"/"+parameter, setVariables);
+}
+function addProductsToVar(item) {
+    var products= [];
+    if (item.uuid in productIndex) {
+	var productList= productIndex[item.uuid];
+	products= $.map(productList, 
+			function(v) { return {'product': v, 'name':productNames[v][0]} });
+    }
+    item['products']= products
 }
 function setVariables(data) {
     filterIndex= data.filterIndex;
-    $('#variables').html(getVariablesContent(data));
+    var oldVars= data.variables;
+    $.each(oldVars, function(i,v) { addProductsToVar(v); });
+    var newData= {"variables": oldVars};
+    $('#variables').html(getVariablesContent(newData));
     $('.filterValues input').live('click', filterVariables);
 //    $('.variableLink').click(getDetails);
 }
 function filterVariables() {
     $(".variable").show();
-    var allVars= $(".variable").map(function() { return $(this).attr("id"); });
-    var items=$("filterValues input[type='checkbox']:checked").map(function () {  
+    var allVars= $(".variable").map(function() { return $(this).attr("var"); });
+    var items=$(".filterValues input[type='checkbox']:checked").map(function () {  
 	return this.value;
     }).get();
     if (items.length > 0) {
 	var X= [];
-	$.each(items, function(i, item) { 
+	$.each(items, function(j, item) { 
 	    var i= item.split(',');
 	    var theFilter= i[0].split("#")[1];
 	    var theFilterValue= i[1];
@@ -70,9 +85,10 @@ function filterVariables() {
 	var indivFilters= [];
 	$.each(X, function(i, v) { indivFilters.push(filterIndex[v]); });
 	var compositeFilter= intersect_all(indivFilters);
+	console.log(compositeFilter);
 	$.each(allVars, function(i,v) { 
 	    var inFilter= ($.inArray(v, compositeFilter) > -1)
-	    if (!inFilter) { hideVariable(v); }
+	    if (!inFilter) { $('#varpicker-'+v).hide(); }
 	});
     }
 }

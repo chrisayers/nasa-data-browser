@@ -1,33 +1,22 @@
-#left {	
+#parameters {	
     float: left;
     margin: 20px;
 }
-#middle { 
+#variables { 
     float: left;
     display: inline-block;
     height: 90%;
-    width: 25%;
+    width: 60%;
     margin: 20px;
     overflow: auto;
 }
-#right { 
-    float: right;
-    display: inline-block;
-    height: 90%;
-    width: 40%;
-    margin: 20px;
-    overflow: auto;
-}
+
 .filterValues {
     margin-bottom: 10px;
 }
 .variable {
     border-bottom: solid 1px #d6d6d6;
     padding: 8px 0px 5px 0px;
-    vertical-align: top;
-}
-.detail {
-    padding: 10px 0px 10px 0px;
     vertical-align: top;
 }
 .wordwrap {
