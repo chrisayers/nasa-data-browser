@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NASA Variable Browser</title>
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+  <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+    <script type="text/javascript" src="js/mobile.js"></script>
+<head>
+
+<body>     
+
+  <div id="parameters" data-role="page">
+    <div data-role="header">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#parameters" data-transition="slideup" class="ui-btn-active ui-state-persist">Parameters</a></li>
+          <li><a href="#filters">Filters</a></li>
+          <li><a href="#variables">Variables</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="parameter-content" data-role="content">
+      <ul id="parameter-list" data-role="listview">    	  
+      </ul>
+    </div>        
+    <div data-role="footer">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#parameters" data-transition="slideup" class="ui-btn-active ui-state-persist">Parameters</a></li>
+          <li><a href="#filters">Filters</a></li>
+          <li><a href="#variables">Variables</a></li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+    
+  <div id="filters" data-role="page">
+    <div data-role="header">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#parameters">Parameters</a></li>
+          <li><a href="#filters" data-transition="slideup" class="ui-btn-active ui-state-persist">Filters</a></li>
+          <li><a href="#variables">Variables</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="filter-content" data-role="content">
+      <div id="filter-container" data-role="fieldcontain">
+      </div>
+    </div>        
+    <div data-role="footer">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#parameters">Parameters</a></li>
+          <li><a href="#filters" data-transition="slideup" class="ui-btn-active ui-state-persist">Filters</a></li>
+          <li><a href="#variables">Variables</a></li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+  <div id="variables" data-role="page">
+    <div data-role="header">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#parameters">Parameters</a></li>
+          <li><a href="#filters">Filters</a></li>
+          <li><a href="#variables" data-transition="slideup" class="ui-btn-active ui-state-persist">Variables</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="variable-content" data-role="content">    
+      <ul id="variable-list" data-role="listview"></ul>
+    </div>        
+    <div data-role="footer">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#parameters">Parameters</a></li>
+          <li><a href="#filters">Filters</a></li>
+          <li><a href="#variables" data-transition="slideup" class="ui-btn-active ui-state-persist">Variables</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>  
+  
+  <div id="details" data-role="page">
+    <div data-role="header">
+      <div data-role="navbar">
+	    <ul>
+          <li><a href="#parameters">Parameters</a></li>
+          <li><a href="#filters">Filters</a></li>
+          <li><a href="#variables" data-transition="slideup" class="ui-btn-active ui-state-persist">Variables</a></li>
+	    </ul>
+      </div>
+    </div>
+    <div id="detail-content" data-role="content">
+      <div class="detail" id="facts"></div>
+    </div>
+    <div data-role="footer">
+      <div data-role="navbar">
+	    <ul>
+          <li><a href="#parameters">Parameters</a></li>
+          <li><a href="#filters">Filters</a></li>
+          <li><a href="#variables" data-transition="slideup" class="ui-btn-active ui-state-persist">Variables</a></li>
+	    </ul>
+      </div>
+    </div>    
+  </div>
+  
+</body>
+</html>
