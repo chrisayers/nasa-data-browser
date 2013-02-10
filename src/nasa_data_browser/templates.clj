@@ -24,15 +24,15 @@
  <tr>
   <td>Variable</td>
   <td>Parameter</td>
-  <td>Description</td>
+  <td>Product</td>
  </tr>
 {{#each variables}} 
  <tr>
   <td> 
    <input type='checkbox' value='{{uuid}}'/> 
-   <a href='#'>{{shortName}} ({{paramName}})</a> </td>
+   <a href='#'>{{variable}}</a> </td>
   <td> {{parameter}} </td>
-  <td> {{description}} </td>
+  <td> {{product}} </td>
  </tr>
 {{/each}} 
 ")
