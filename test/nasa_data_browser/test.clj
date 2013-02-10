@@ -2,7 +2,8 @@
   (:use [seabass.core]
         [clojure.test])
   (:require [nasa-data-browser.parameters :as parameters]
-            [nasa-data-browser.variables :as variables]))
+            [nasa-data-browser.variables :as variables]
+            [nasa-data-browser.comparison :as comparison]))
 
 (def endpoint (build "test/test.nt"))
 
@@ -27,5 +28,17 @@
     (-> var (get "uuid") (= "SYNTunedTotalSky-NoAerosolLWTOAUp4") is)
     (-> var (get "variable") (= "Tuned Total-Sky-NoAerosol LW TOA Up") is)
     (-> var (get "parameter") (= "Flux") is)
-    (-> var (get "product") (= "http://www.flyingsandbox.com/2012/es#CER_SYN1deg-3Hour_Terra-MODIS_Edition3A") is)
+    (-> var (get "products") (= #{"http://www.flyingsandbox.com/2012/es#CER_SYN1deg-3Hour_Terra-MODIS_Edition3A"}) is)
     (-> filt-index (get "targetLocation#EarthSurface") count (= 48) is)))
+
+(deftest comparison-test
+  (let [inputs ["MERRA-LWGEM", "SYNTunedClearSkyWNDown1", "MERRA-LWTUP"]
+        data (comparison/get-data inputs endpoint)
+        vars (get data "variables")
+        rels (get data "relations")]
+        (-> vars count (= 3) is)
+        (-> vars first keys count (= 3) is)
+        (-> vars first (get "quickFacts") count (= 9) is)
+        (-> rels count (= 9) is)))
+        
+        

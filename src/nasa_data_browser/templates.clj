@@ -32,12 +32,28 @@
    <input type='checkbox' value='{{uuid}}'/> 
    <a href='#'>{{variable}}</a> </td>
   <td> {{parameter}} </td>
-  <td> {{product}} </td>
+  <td> {{products}} </td>
  </tr>
 {{/each}} 
+</table>
 ")
 
 (def comparison-desktop "
+<table id='comparison>
+ <tr>
+  {{#each relations}}
+   <td>{{this}}</td>
+  {{/each}}
+ </tr>
+ {{#each variables}}
+  <tr>
+   <td>{{name}}</td>
+    {{#each quickFacts}}
+     <td>{{value}}</td>
+    {{/each}}
+  </tr>
+ {{/each}}
+</table>
 ")
 
 (defn get-mobile [] )

@@ -6,7 +6,7 @@
   (str u/prefix "
 select distinct ?variable ?variableName ?parameter ?paramName 
                 ?filterObject ?product ?productName { 
- ?parameter rdfs:subClassOf :" parameter " .
+ ?parameter rdfs:subClassOf :"parameter" .
  ?variableUri :parameter ?parameter .
  ?variableUri :product ?product  .
  optional { ?variableUri rdfs:label ?variableName } .
@@ -39,6 +39,6 @@ select distinct ?variable ?variableName ?parameter ?paramName
                 {"uuid" var
                  "variable" (if (nil? var-name) var var-name)
                  "parameter" (if (nil? param-name) param param-name)
-                 "product" (if (nil? product-name) product product-name)}))]
+                 "products" (get products var)}))]
       {"variables" (map get-var-info vars)
        "filterIndex" filters})))
