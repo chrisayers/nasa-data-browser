@@ -63,12 +63,12 @@
 (defn get-mobile [] )
 
 (defn get-desktop []
-  {"parameters": parameters-desktop
-   "variables": variables-desktop
-   "comparison": comparison-desktop
-   "info": info-desktop})
+  {"parameters" parameters-desktop
+   "variables" variables-desktop
+   "comparison" comparison-desktop
+   "info" info-desktop})
 
 (defn get-data [view]
   (cond
-   (== view 'mobile') (get-mobile)
+   (= view "mobile") (get-mobile)
    :else (get-desktop) ))

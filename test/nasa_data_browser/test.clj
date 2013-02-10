@@ -4,9 +4,16 @@
   (:require [nasa-data-browser.parameters :as parameters]
             [nasa-data-browser.variables :as variables]
             [nasa-data-browser.comparison :as comparison]
+            [nasa-data-browser.templates :as templates]
             [nasa-data-browser.info :as info]))
 
 (def endpoint (build "test/test.nt"))
+
+(deftest templates-test
+  (let [data (templates/get-data "desktop")]
+    (-> data (get "parameters") count (> 50) is)
+    (-> data (get "variables") count (> 50) is)
+    (-> data (get "comparison") count (> 50) is)))
 
 (deftest parameters-test
   (let [data (parameters/get-data endpoint)
