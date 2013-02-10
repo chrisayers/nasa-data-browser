@@ -10,25 +10,26 @@ var accordionOptions= {collapsible: true,
 		heightStyle: "content"}
 var getParametersContent;
 var getVariablesContent;
+var getComparisonContent;
 var getInfoContent;
-var getMoreInfoContent;
-var getNoInfoContent;
 
 $(document).ready(setup);
 
 function setup() { 
     if (jQuery.browser.mobile) { window.location.replace(appUrl+'/mobile.html'); }
-    else { getParameters(); }
+    else { getTemplates('desktop'); }
 }
 function getTemplates(view) {
-    $.getJSON(templatesUrl, {'view': 'desktop'}, getParameters); 
+    $.getJSON(templatesUrl, {'view': view}, setTemplates); 
 }
 function setTemplates(data) {
-    getParametersContent= Handlebars.compile(data.templates.parameters);
-    getVariablesContent= Handlebars.compile(data.templates.variables);
+    getParametersContent= Handlebars.compile(data.parameters);
+    getVariablesContent= Handlebars.compile(data.variables);
+    getComparisonContent= Handlebars.compile(data.comparison);
+    getInfoContent= Handlebars.compile(data.info);
+    getParameters();
 }
-function getParameters(data) { 
-    setTemplates(data);
+function getParameters() { 
     $.getJSON(parametersUrl, setParameters); 
 }
 function setParameters(data) {
@@ -36,38 +37,26 @@ function setParameters(data) {
     $('#parameters').html(getParametersContent(data));
     $('#parameters').accordion(accordionOptions);
     $('#parameters h3').live('click', function () {
-	clearCheckboxes();
-	clearDetails();
+	$('.filterValues:checked').removeAttr('checked');
 	var parameter= $(this).text();
 	var opening= $(this).hasClass('ui-state-active');
 	if (opening) { getVariables(parameter); }
 	else { $('#variables').empty(); }
     });
 }
-function clearCheckboxes() {
-    $('.filterValues').find(':checked').each(function() {
-	$(this).removeAttr('checked');
-    });
-}
-function setVariables(data) {
-    filterIndex= data.filterIndex;
-    $('#variables').empty();
-    $('#variables').html(getVariablesContent(data));
-    activateCheckboxes();
-    $('.variableLink').click(getDetails);
-}
-function activateCheckboxes() {
-	$('.filterValues input').live('click', filterVariables);
-}
 function getVariables(parameter) {
 	$.getJSON(variablesUrl, {'parameter': parameter}, setVariables);
 }
+function setVariables(data) {
+    filterIndex= data.filterIndex;
+    $('#variables').html(getVariablesContent(data));
+    $('.filterValues input').live('click', filterVariables);
+//    $('.variableLink').click(getDetails);
+}
 function filterVariables() {
-    clearDetails();
-    clearHighlights();
     $(".variable").show();
     var allVars= $(".variable").map(function() { return $(this).attr("id"); });
-    var items=$("input[type='checkbox']:checked").map(function () {  
+    var items=$("filterValues input[type='checkbox']:checked").map(function () {  
 	return this.value;
     }).get();
     if (items.length > 0) {
@@ -87,45 +76,3 @@ function filterVariables() {
 	});
     }
 }
-
-function hideVariable(variable) {
-	$('#'+variable).hide();
-}
-function highlightVariable(variable) {
-	$('#'+variable).css('background-color', 'yellow');
-}
-function clearHighlights() {
-	$('.variable').css('background-color', 'inherit');
-}
-function getDetails() {
-	var params= {"variable": $(this).attr('uuid')};
-	$.getJSON(detailsUrl, params, setDetails);
-}
-function setDetails(data) {
-    clearHighlights();
-    clearDetails();
-    highlightVariable(data.variable);
-    $('#facts').empty();
-    if (data.facts.length === 0) { $('#facts').html(getNoInfoContent(data)); }
-    else { $('#facts').html(getInfoContent(data)); }
-    $('.moredetail').click(getMoreDetails);
-}
-function clearDetails() {
-	$('#name').empty();
-	$('#facts').empty();
-}
-function getMoreDetails() {
-    var params= {"variable": $(this).attr('uuid').split('-')[1]};
-    var id= $(this).attr('uuid');
-    if ($('#'+id).is(':empty')) { 
-	$.getJSON(detailsUrl, 
-		  params, 
-		  function(data) { setMoreDetails(id, data); }); }
-    else { $('#'+id).empty(); }
-}
-function setMoreDetails(id, data) {
-    if (data.facts.length === 0) { $('#'+id).html(getNoInfoContent(data)); }
-    else { $('#'+id).html(getMoreInfoContent(data)); }
-}
-
-

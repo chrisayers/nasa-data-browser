@@ -39,14 +39,14 @@
         rels (get data "relations")]
     (-> vars count (= 3) is)
     (-> vars first keys count (= 3) is)
-    (-> vars first (get "quickFacts") count (= 9) is)
-    (-> rels count (= 9) is)))
+    (-> vars first (get "quickFacts") count (= 10) is)
+    (-> rels count (= 10) is)))
 
 (deftest info-test
   (let [data (info/get-data "CERESFM3" endpoint)
         facts (get data "facts")]
     (-> data (get "item") (= "CERESFM3") is)
     (-> data (get "name") (= "CERESFM3") is)
-    (-> facts count (= 2) is)
-    (-> facts (nth 1) (get "relation") (= "instrument spectral range") is)
-    (-> facts (nth 1) (get "value") count (= 4) is)))
+    (-> facts count (= 3) is)
+    (-> facts (nth 1) (get "relation") (= "has platform") is)
+    (-> facts (nth 1) (get "value") (= "AquaSatellite") is)))
