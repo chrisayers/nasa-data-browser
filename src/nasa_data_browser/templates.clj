@@ -48,14 +48,17 @@
 ")
 
 (def comparison-desktop "
-<table id='comparison>
- <tr>
-  {{#each relations}}
-   <td>{{this}}</td>
-  {{/each}}
- </tr>
+<table>
+  <tr>
+   <td>uuid</td>
+   <td>name</td>
+   {{#each relations}}
+    <td>{{this}}</td>
+   {{/each}}
+  </tr>
  {{#each variables}}
   <tr>
+   <td>{{variable}}</td>
    <td>{{name}}</td>
     {{#each quickFacts}}
      <td>{{value}}</td>

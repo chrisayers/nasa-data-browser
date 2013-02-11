@@ -6,6 +6,7 @@
             [nasa-data-browser.templates :as templates]
             [nasa-data-browser.parameters :as parameters]
             [nasa-data-browser.variables :as variables]
+            [nasa-data-browser.comparison :as comparison]
             [nasa-data-browser.info :as info]
             [nasa-data-browser.utils :as u]
             ))
@@ -21,6 +22,9 @@
            u/json-response))
   (GET "/variables/:parameter" [parameter]
        (-> (variables/get-data parameter endpoint)
+           u/json-response))
+  (GET "/comparison" {{vars :vars} :params}
+       (-> (comparison/get-data vars endpoint)
            u/json-response))
   (GET "/" [] (io/resource "public/index.html"))
   (route/resources "/")
