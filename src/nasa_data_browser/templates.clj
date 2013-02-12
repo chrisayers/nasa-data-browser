@@ -33,12 +33,12 @@
    <tr class='variable' id='varpicker-{{variable}}' var='{{variable}}'>
     <td> 
      <input type='checkbox' value='{{variable}}'/> 
-     <a href='#'>{{variableName}}</a> 
+     <a uuid='{{variable}}' class='infolink' href='#'>{{variableName}}</a> 
     </td>
     <td>{{parameterName}}</td>
     <td>
      {{#each products}}
-      <a uuid='{{product}}' href='#'>{{name}}</a>
+      <a uuid='{{product}}' class='infolink' href='#'>{{name}}</a>
      {{/each}}
     </td>
    </tr>
@@ -69,7 +69,17 @@
 ")
 
 (def info-desktop "
-
+<html>
+<head><title>{{name}} Info</title></head>
+<body>
+ <h2 id='name'>{{name}}</h2>
+ <br>
+ <h2 id='facts'>Quick Facts:</h2>
+  {{#each facts}}
+  <p style='padding-left: 2em'><b>{{relation}}</b>: {{value}}</p>
+  {{/each}}
+</body>
+</html>
 ")
 
 (defn get-mobile [] )

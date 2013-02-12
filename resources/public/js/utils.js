@@ -1,3 +1,11 @@
+var appUrl= "http://localhost:3000";
+//var appUrl= "http://nasa-sleepydog.elasticbeanstalk.com";
+var templatesUrl= appUrl+"/templates";
+var parametersUrl= appUrl+"/parameters";
+var variablesUrl= appUrl+"/variables";
+var comparisonUrl= appUrl+"/comparison";
+var infoUrl= appUrl+"/info";
+
 function intersect_all(lists) {
 	if (lists.length == 0) return [];
 	else if (lists.length == 1) return lists[0];

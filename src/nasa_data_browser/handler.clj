@@ -26,6 +26,9 @@
   (GET "/comparison" {{vars :vars} :params}
        (-> (comparison/get-data vars endpoint)
            u/json-response))
+  (GET "/info/:item" [item]
+       (-> (info/get-data item endpoint)
+           u/json-response))
   (GET "/" [] (io/resource "public/index.html"))
   (route/resources "/")
   (route/not-found "Not Found"))

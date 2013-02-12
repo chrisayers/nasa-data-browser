@@ -1,10 +1,3 @@
-var appUrl= "http://localhost:3000";
-//var appUrl= "http://nasa-sleepydog.elasticbeanstalk.com";
-var templatesUrl= appUrl+"/templates";
-var parametersUrl= appUrl+"/parameters";
-var variablesUrl= appUrl+"/variables";
-var comparisonUrl= appUrl+"/comparison";
-var detailsUrl= appUrl+"/info";
 var filterIndex= {}; // filters -> lists of variables
 var productIndex= {}; // variables -> products
 var productNames= {}; // products -> product names
@@ -74,6 +67,7 @@ function setVariables(data) {
     $('#compare').show();
     $('#variables').html(getVariablesContent(newData));
     $('.filterValues input').live('click', filterVariables);
+    $('a.infolink').click(infoLinkClick);
 }
 function filterVariables() {
     $(".variable").show();
@@ -100,11 +94,24 @@ function filterVariables() {
 function getComparison() {
     var selectedVars= $(".variable input[type='checkbox']:checked")
 	.map(function () { return this.value; }).get();
-    console.log(selectedVars);
     if (selectedVars.length > 0) {
 	$.getJSON(comparisonUrl, {"vars": selectedVars}, setComparison); 
     }
 }
 function setComparison(data) {
     $('#comparison').html(getComparisonContent(data)).show();    
+}
+function infoLinkClick(e) {
+    e.preventDefault();
+    getInfo($(this).attr('uuid'));
+}
+function getInfo(item) {
+    $.getJSON(infoUrl+"/"+item, setInfo);
+}
+function setInfo(data) {
+    var w =  window.open('','','width=450,height=500');
+    w.document.open();
+    w.document.write(getInfoContent(data));
+    w.document.close();
+    return false;
 }
