@@ -21,14 +21,11 @@
 
 (def variables-desktop "
 <table id='variables'>
- <thead>
   <tr>
-   <th>Variable</th>
-   <th>Parameter</th>
-   <th>Products</th>
+   <td>Variable</td>
+   <td>Parameter</td>
+   <td>Products</td>
   </tr>
- </thead>
- <tbody>
   {{#each variables}} 
    <tr class='variable' id='varpicker-{{variable}}' var='{{variable}}'>
     <td> 
@@ -43,7 +40,6 @@
     </td>
    </tr>
   {{/each}} 
- </tbody>
 </table>
 ")
 
