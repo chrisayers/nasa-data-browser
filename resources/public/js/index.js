@@ -36,7 +36,7 @@ function setParameters(data) {
     $('#parameters').html(getParametersContent(data));
     $('#parameters').accordion(accordionOptions);
     $('#parameters h3').live('click', function () {
-	$('.filterValues:checked').removeAttr('checked');
+	$(".filterValues input[type='checkbox']").attr('checked', false);
 	var parameter= $(this).text();
 	var opening= $(this).hasClass('ui-state-active');
 	if (opening) { getVariables(parameter); }
@@ -71,8 +71,9 @@ function setVariables(data) {
     $('a.infolink').click(infoLinkClick);
 }
 function filterVariables() {
+    $(".variable input[type='checkbox']").attr('checked', false);
     $(".variable").show();
-    $("comparison").empty();
+    $("#comparison").empty();
     var allVars= $(".variable").map(function() { return $(this).attr("var"); });
     var items=$(".filterValues input[type='checkbox']:checked")
 	.map(function () { return this.value; }).get();
@@ -86,9 +87,7 @@ function filterVariables() {
 	});
 	var indivFilters= [];
 	$.each(X, function(i, v) { indivFilters.push(filterIndex[v]); });
-	console.log(indivFilters);
 	var compositeFilter= intersect_all(indivFilters);
-	console.log(compositeFilter);
 	$.each(allVars, function(i,v) { 
 	    var inFilter= ($.inArray(v, compositeFilter) > -1)
 	    if (!inFilter) { $('#varpicker-'+v).hide(); }
@@ -96,6 +95,7 @@ function filterVariables() {
     }
 }
 function getComparison() {
+    $("#comparison").empty();
     var selectedVars= $(".variable input[type='checkbox']:checked")
 	.map(function () { return this.value; }).get();
     if (selectedVars.length > 0) {
