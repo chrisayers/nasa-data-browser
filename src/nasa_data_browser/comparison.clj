@@ -25,11 +25,11 @@ bind (strafter(str(?relUri), '#') as ?rel)
         relations (into #{} (map :rel facts))
         variable-names (u/build-relation :variable :variableName facts)
         rel-names (u/build-relation :rel :relName facts)
-        values (u/build-relation :rel :value facts)
+        values (u/build-relation [:variable :rel] :value facts)
         value-names (u/build-relation :value :valueName facts)]
-    (letfn [(get-rel-info [rel]
+    (letfn [(get-rel-info [var rel]
               (let [rel-name (-> (get rel-names rel) first)
-                    value (-> (get values rel) first)
+                    value (->> (get values [var rel]) (str/join ", "))
                     value-trunc (-> value (str/split #"#") last)
                     value-name (-> (get value-names value) first)]
                 {"relation" (if (nil? rel-name) rel rel-name)
@@ -38,6 +38,6 @@ bind (strafter(str(?relUri), '#') as ?rel)
               (let [name (-> (get variable-names variable) first)]
                     {"variable" variable
                      "name" (if (nil? name) variable name)
-                     "quickFacts" (->> relations (map get-rel-info) merge)}))]
+                     "quickFacts" (->> relations (map #(get-rel-info variable %) ,,,) merge)}))]
       {"relations" (map #(-> % rel-names first) relations)
        "variables" (map get-var-info variables)})))
