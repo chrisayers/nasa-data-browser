@@ -84,7 +84,9 @@ function filterVariables() {
 	});
 	var indivFilters= [];
 	$.each(X, function(i, v) { indivFilters.push(filterIndex[v]); });
+	console.log(indivFilters);
 	var compositeFilter= intersect_all(indivFilters);
+	console.log(compositeFilter);
 	$.each(allVars, function(i,v) { 
 	    var inFilter= ($.inArray(v, compositeFilter) > -1)
 	    if (!inFilter) { $('#varpicker-'+v).hide(); }

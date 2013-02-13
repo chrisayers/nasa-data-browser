@@ -11,8 +11,8 @@
             [nasa-data-browser.info :as info]
             [nasa-data-browser.utils :as u]
             ))
-(comment (def endpoint "http://localhost:8080/openrdf-sesame/repositories/nasa"))
-(def endpoint "http://sesame-sleepydog.elasticbeanstalk.com/repositories/nasa")
+(def endpoint "http://localhost:8080/openrdf-sesame/repositories/nasa")
+(comment (def endpoint "http://sesame-sleepydog.elasticbeanstalk.com/repositories/nasa"))
 
 (defn wrap-content-type [handler content-type]
   (fn [request]

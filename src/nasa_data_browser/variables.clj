@@ -5,7 +5,7 @@
 (defn var-query [parameter]
   (str u/prefix "
 select distinct ?variable ?variableName ?parameter ?paramName { 
- ?parameterUri rdfs:subClassOf :"parameter" .
+ ?parameterUri rdfs:subClassOf* :"parameter" .
  ?variableUri :parameter ?parameterUri .
  ?variableUri ?filterUri ?objectUri . 
  ?filterUri :searchFilterFor ?x .
@@ -18,7 +18,7 @@ select distinct ?variable ?variableName ?parameter ?paramName {
 (defn filt-query [parameter]
   (str u/prefix "
 select distinct ?variable ?filterObject { 
- ?parameterUri rdfs:subClassOf :"parameter" .
+ ?parameterUri rdfs:subClassOf* :"parameter" .
  ?variableUri :parameter ?parameterUri .
  ?variableUri ?filterUri ?objectUri . 
  ?filterUri :searchFilterFor ?x .
