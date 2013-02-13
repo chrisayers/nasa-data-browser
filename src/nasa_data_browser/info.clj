@@ -33,6 +33,6 @@ bind (strafter(str(?relUri), '#') as ?rel)
                     value (-> (map get-value-name (get values rel)))]
                 {"relation" (if (nil? rel-name) rel rel-name)
                  "value" (if (= (count value) 1) (first value) value)}))]
-      {"item" item
+      {"uuid" item
        "name" (if (nil? item-name) item item-name)
        "facts" (map get-rel-info (get relations item))})))

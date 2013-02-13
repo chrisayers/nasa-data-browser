@@ -35,7 +35,7 @@
     <td>{{parameterName}}</td>
     <td>
      {{#each products}}
-      <a uuid='{{product}}' class='infolink' href='#'>{{name}}</a>
+     <p>{{name}}</p>
      {{/each}}
     </td>
    </tr>
@@ -73,6 +73,12 @@
  <h2 id='facts'>Quick Facts:</h2>
   {{#each facts}}
   <p style='padding-left: 2em'><b>{{relation}}</b>: {{value}}</p>
+  {{/each}}
+ {{#if products}}
+ <h2 id='facts'>Products:</h2>
+ {{/if}}
+  {{#each products}}
+  <p style='padding-left: 2em'>{{name}}</p>
   {{/each}}
 </body>
 </html>

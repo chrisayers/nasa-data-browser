@@ -41,7 +41,8 @@ function setParameters(data) {
 	var opening= $(this).hasClass('ui-state-active');
 	if (opening) { getVariables(parameter); }
 	else { 
-	    $('#comparison, #compare').hide();
+	    $('#compare').hide();
+	    $('#comparison').empty();
 	    $('#variables').empty(); 
 	}
     });
@@ -49,7 +50,7 @@ function setParameters(data) {
 function getVariables(parameter) {
 	$.getJSON(variablesUrl+"/"+parameter, setVariables);
 }
-function addProductsToVar(item) {
+function addProductsToItem(item) {
     var products= [];
     if (item.uuid in productIndex) {
 	var productList= productIndex[item.uuid];
@@ -61,7 +62,7 @@ function addProductsToVar(item) {
 function setVariables(data) {
     filterIndex= data.filterIndex;
     var oldVars= data.variables;
-    $.each(oldVars, function(i,v) { addProductsToVar(v); });
+    $.each(oldVars, function(i,v) { addProductsToItem(v); });
     var newData= {"variables": oldVars};
     $('#comparison').empty();
     $('#compare').show();
@@ -71,6 +72,7 @@ function setVariables(data) {
 }
 function filterVariables() {
     $(".variable").show();
+    $("comparison").empty();
     var allVars= $(".variable").map(function() { return $(this).attr("var"); });
     var items=$(".filterValues input[type='checkbox']:checked")
 	.map(function () { return this.value; }).get();
@@ -112,7 +114,8 @@ function getInfo(item) {
 }
 function setInfo(data) {
     var w =  window.open('','','width=450,height=500');
-    w.document.open();
+    w.document.open();    
+    if (data.uuid in productIndex) { addProductsToItem(data); }
     w.document.write(getInfoContent(data));
     w.document.close();
     return false;
