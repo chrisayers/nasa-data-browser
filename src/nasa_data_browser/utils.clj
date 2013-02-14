@@ -13,12 +13,14 @@
 (defn set-union [s1 s2]
   (set/union (to-set s1) (to-set s2)))
 (defn pull-relation [parent-key child-key m]
-  (cond (vector? parent-key) {(map #(get m %) parent-key) (-> (get m child-key) to-set)}
-        :else {(get m parent-key) (-> (get m child-key) to-set)}))
+{(if (vector? parent-key)
+   (pmap #(get m %) parent-key) 
+   (get m parent-key))
+ (-> (get m child-key) to-set)})
 (defn build-relation [parent-key child-key result-set]
   (reduce #(merge-with set/union %1 %2)
           {}
-          (map #(pull-relation parent-key child-key %1) result-set)))
+          (pmap #(pull-relation parent-key child-key %1) result-set)))
 (defn json-response [data & [status]]
   {:status (or status 200)
    :headers {"Content-Type" "application/json"}
