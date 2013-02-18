@@ -1,5 +1,7 @@
 (ns nasa-data-browser.handler
-  (:use compojure.core)
+  (:use [compojure.core]
+        [ring.middleware.resource]
+        [ring.middleware.file-info])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [compojure.response :as response]
@@ -9,15 +11,9 @@
             [nasa-data-browser.variables :as variables]
             [nasa-data-browser.comparison :as comparison]
             [nasa-data-browser.info :as info]
-            [nasa-data-browser.utils :as u]
-            ))
+            [nasa-data-browser.utils :as u]))
 (def endpoint "http://localhost:8080/openrdf-sesame/repositories/nasa")
 (comment (def endpoint "http://sesame-sleepydog.elasticbeanstalk.com/repositories/nasa"))
-
-(defn wrap-content-type [handler content-type]
-  (fn [request]
-    (let [response (handler request)]
-      (assoc-in response [:headers "Content-Type"] content-type))))
 
 (defroutes app-routes
   (GET "/templates/:view" [view]       
@@ -35,11 +31,9 @@
   (GET "/info/:item" [item]
        (-> (info/get-data item endpoint)
            u/json-response))
-  (GET "/" [] 
-      (-> (io/resource "public/index.html") 
-          (response/render {"Content-Type" "text/html"})))
   (route/resources "/")
   (route/not-found "Not Found"))
   
 (def app
-  (handler/site app-routes))
+  (-> app-routes
+      handler/site))

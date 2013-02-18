@@ -1,4 +1,4 @@
-var appUrl= "http://localhost:8080";
+var appUrl= "http://localhost:8080/data";
 //var appUrl= "http://nasa-sleepydog.elasticbeanstalk.com";
 var templatesUrl= appUrl+"/templates";
 var parametersUrl= appUrl+"/parameters";
