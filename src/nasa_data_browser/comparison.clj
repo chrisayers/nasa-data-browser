@@ -9,7 +9,6 @@ select ?variable ?variableName ?rel ?relName ?value ?valueName {
 ?variableUri ?relUri ?value .
 filter(?variableUri in ("variables")) .
 ?relUri rdf:type :QuickFact .
-filter(?relUri not in (:product, :variableName)) .
 optional { ?variableUri rdfs:label ?variableName } .
 optional { ?relUri rdfs:label ?relName } .
 optional { ?value rdfs:label ?valueName } .
