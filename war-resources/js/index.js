@@ -12,7 +12,7 @@ var getInfoContent;
 $(document).ready(setup);
 
 function setup() { 
-    $("#comparison, #compare").hide();
+    $('#compare').hide();
     if (jQuery.browser.mobile) { window.location.replace(appUrl+'/mobile.html'); }
     else { getTemplates('desktop'); }
 }
@@ -42,7 +42,6 @@ function setParameters(data) {
 	if (opening) { getVariables(parameter); }
 	else { 
 	    $('#compare').hide();
-	    $('#comparison').empty();
 	    $('#variables').empty(); 
 	}
     });
@@ -64,7 +63,6 @@ function setVariables(data) {
     var oldVars= data.variables;
     $.each(oldVars, function(i,v) { addProductsToItem(v); });
     var newData= {"variables": oldVars};
-    $('#comparison').empty();
     $('#compare').show();
     $('#variables').html(getVariablesContent(newData));
     $('.filterValues input').live('click', filterVariables);
@@ -73,7 +71,6 @@ function setVariables(data) {
 function filterVariables() {
     $(".variable input[type='checkbox']").attr('checked', false);
     $(".variable").show();
-    $("#comparison").empty();
     var allVars= $(".variable").map(function() { return $(this).attr("var"); });
     var items=$(".filterValues input[type='checkbox']:checked")
 	.map(function () { return this.value; }).get();
@@ -95,7 +92,6 @@ function filterVariables() {
     }
 }
 function getComparison() {
-    $("#comparison").empty();
     var selectedVars= $(".variable input[type='checkbox']:checked")
 	.map(function () { return this.value; }).get();
     if (selectedVars.length > 0) {
@@ -103,7 +99,11 @@ function getComparison() {
     }
 }
 function setComparison(data) {
-    $('#comparison').html(getComparisonContent(data)).show();    
+    var w= window.open('', 'comparison', 'width=600, height=400');
+    w.document.open();
+    w.document.write(getComparisonContent(data));
+    w.document.close();
+    return false;
 }
 function infoLinkClick(e) {
     e.preventDefault();

@@ -44,24 +44,34 @@
 ")
 
 (def comparison-desktop "
-<table>
-  <tr>
-   <td>uuid</td>
-   <td>name</td>
-   {{#each relations}}
-    <td>{{this}}</td>
-   {{/each}}
-  </tr>
- {{#each variables}}
-  <tr>
-   <td>{{variable}}</td>
-   <td>{{name}}</td>
-    {{#each quickFacts}}
-     <td>{{value}}</td>
+<html>
+<head>
+ <title>Comparison</title>
+ <link rel=stylesheet href='css/tables.css' type='text/css'>
+</head>
+<body>
+ <div class='CSSTableGenerator'>
+  <table>
+   <tr>
+    <td>uuid</td>
+    <td>name</td>
+    {{#each relations}}
+     <td>{{this}}</td>
     {{/each}}
-  </tr>
- {{/each}}
-</table>
+   </tr>
+  {{#each variables}}
+   <tr>
+    <td>{{variable}}</td>
+    <td>{{name}}</td>
+     {{#each quickFacts}}
+      <td>{{value}}</td>
+     {{/each}}
+   </tr>
+  {{/each}}
+  </table>
+ </div>
+</body>
+</html>
 ")
 
 (def info-desktop "

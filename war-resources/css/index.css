@@ -1,4 +1,18 @@
+#top {
 
+   height: 178px;
+}
+#nasalogo { 
+   width: 204px;
+   float: left;
+}
+#nasatitle {
+    margin-top: 50px;
+    float: left;
+}
+#bottom {
+    clear: both;
+}
 #parameters {	
     float: left;
     margin: 20px;
@@ -7,9 +21,9 @@
     float: left;
 }
 #variables { 
-    height: 40%;
-    display: inline-block;
     overflow: auto;
+    max-height: 70%;
+    margin-top: 20px;
 }
 #comparison {
     float: left;
