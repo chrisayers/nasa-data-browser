@@ -20,7 +20,7 @@
 #content {
     float: left;
 }
-#variables { 
+#vars { 
     overflow: auto;
     max-height: 70%;
     margin-top: 20px;
@@ -48,4 +48,10 @@
 }
 .indented {
     padding-left: 2em;
+}
+tr.alt td {
+    background: #aad4ff;
+}
+tr.org td {
+    background: #ffffff;
 }

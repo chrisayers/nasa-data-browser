@@ -34,6 +34,7 @@ function setParameters(data) {
     productIndex= data.hasProduct;
     productNames= data.hasProductName;
     $('#parameters').html(getParametersContent(data));
+    $('#parameters').unbind();
     $('#parameters').accordion(accordionOptions);
     $('#parameters h3').live('click', function () {
 	$(".filterValues input[type='checkbox']").attr('checked', false);
@@ -42,7 +43,7 @@ function setParameters(data) {
 	if (opening) { getVariables(parameter); }
 	else { 
 	    $('#compare').hide();
-	    $('#variables').empty(); 
+	    $('#vars').empty(); 
 	}
     });
 }
@@ -64,9 +65,9 @@ function setVariables(data) {
     $.each(oldVars, function(i,v) { addProductsToItem(v); });
     var newData= {"variables": oldVars};
     $('#compare').show();
-    $('#variables').html(getVariablesContent(newData));
-    $('.filterValues input').live('click', filterVariables);
-    $('a.infolink').click(infoLinkClick);
+    $('#vars').html(getVariablesContent(newData));
+    $('.filterValues input').unbind().live('click', filterVariables);
+    $('a.infolink').unbind().click(infoLinkClick);
 }
 function filterVariables() {
     $(".variable input[type='checkbox']").attr('checked', false);
@@ -90,6 +91,7 @@ function filterVariables() {
 	    if (!inFilter) { $('#varpicker-'+v).hide(); }
 	});
     }
+    stripe('#variables');
 }
 function getComparison() {
     var selectedVars= $(".variable input[type='checkbox']:checked")

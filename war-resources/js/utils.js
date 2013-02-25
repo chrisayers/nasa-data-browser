@@ -30,4 +30,9 @@ function intersection(a, b) {
 	}
     }
     return result;
+}  
+function stripe(tableid) {
+    $(tableid+' tr').removeClass('org alt');
+    $(tableid+' tr:visible:even').addClass('org');
+    $(tableid+' tr:visible:odd').addClass('alt');
 }
