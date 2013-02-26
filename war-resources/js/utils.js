@@ -36,3 +36,17 @@ function stripe(tableid) {
     $(tableid+' tr:visible:even').addClass('org');
     $(tableid+' tr:visible:odd').addClass('alt');
 }
+function updateFilterCounts(filtIndex) {
+     $('#parameters div.ui-accordion-content-active div label').each(function(i) {
+	 var filt= processFiltValue($(this).attr('filt'));
+	 var num= filtIndex[filt].length;
+	 var result= $(this).attr('for')+' ('+num+')';
+	 $(this).text(result);
+    });
+}
+function processFiltValue(item) {
+    var i= item.split(',');
+    var theFilter= i[0].split("#")[1];
+    var theFilterValue= i[1];
+    return theFilter+'#'+theFilterValue;
+}

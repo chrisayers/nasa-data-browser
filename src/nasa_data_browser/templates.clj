@@ -10,7 +10,7 @@
      <br> 
      {{#each values}} 
        <input type='checkbox' value='{{../filter}},{{this}}'/> 
-       <label for='{{this}}'>{{this}}</label> 
+       <label filt='{{../filter}},{{this}}' for='{{this}}'>{{this}}</label> 
        <br> 
      {{/each}} 
     </div> 

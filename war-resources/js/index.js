@@ -40,7 +40,10 @@ function setParameters(data) {
 	$(".filterValues input[type='checkbox']").attr('checked', false);
 	var parameter= $(this).text();
 	var opening= $(this).hasClass('ui-state-active');
-	if (opening) { getVariables(parameter); }
+	if (opening) { 
+	    getVariables(parameter); 
+	    getOpenParamFilters();
+	}
 	else { 
 	    $('#compare').hide();
 	    $('#vars').empty(); 
@@ -68,6 +71,7 @@ function setVariables(data) {
     $('#vars').html(getVariablesContent(newData));
     $('.filterValues input').unbind().live('click', filterVariables);
     $('a.infolink').unbind().click(infoLinkClick);
+    updateFilterCounts(filterIndex);
 }
 function filterVariables() {
     $(".variable input[type='checkbox']").attr('checked', false);
