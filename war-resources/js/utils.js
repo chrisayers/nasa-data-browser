@@ -51,7 +51,6 @@ function updateFilterCounts(filtIndex) {
 	    num= intersect_all(indivFilters).length;
 	}
 	else { num= filtIndex[filt].length; }
-
 	var result= $(this).attr('for')+' ('+num+')';
 	$(this).text(result);
     });

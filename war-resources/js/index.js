@@ -38,6 +38,7 @@ function setParameters(data) {
     $('#parameters').accordion(accordionOptions);
     $('#parameters h3').live('click', function () {
 	$(".filterValues input[type='checkbox']").attr('checked', false);
+	$('#vars').empty(); 
 	var parameter= $(this).text();
 	var opening= $(this).hasClass('ui-state-active');
 	if (opening) { 
@@ -45,7 +46,6 @@ function setParameters(data) {
 	}
 	else { 
 	    $('#compare').hide();
-	    $('#vars').empty(); 
 	}
     });
 }
