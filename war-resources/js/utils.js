@@ -37,11 +37,23 @@ function stripe(tableid) {
     $(tableid+' tr:visible:odd').addClass('alt');
 }
 function updateFilterCounts(filtIndex) {
-     $('#parameters div.ui-accordion-content-active div label').each(function(i) {
-	 var filt= processFiltValue($(this).attr('filt'));
-	 var num= filtIndex[filt].length;
-	 var result= $(this).attr('for')+' ('+num+')';
-	 $(this).text(result);
+    var checked=$(".filterValues input[type='checkbox']:checked")
+	.map(function () { return this.value; }).get();
+    $('#parameters div.ui-accordion-content-active div label').each(function(i) {
+	var filt= processFiltValue($(this).attr('filt'));
+	var num;
+	if (checked.length > 0) {
+	    var X= [];
+	    $.each(checked, function(j, item) { X.push(processFiltValue(item)); });
+	    X.push(filt);
+	    var indivFilters= [];
+	    $.each(X, function(i, v) { indivFilters.push(filterIndex[v]); });
+	    num= intersect_all(indivFilters).length;
+	}
+	else { num= filtIndex[filt].length; }
+
+	var result= $(this).attr('for')+' ('+num+')';
+	$(this).text(result);
     });
 }
 function processFiltValue(item) {

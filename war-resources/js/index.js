@@ -42,7 +42,6 @@ function setParameters(data) {
 	var opening= $(this).hasClass('ui-state-active');
 	if (opening) { 
 	    getVariables(parameter); 
-	    getOpenParamFilters();
 	}
 	else { 
 	    $('#compare').hide();
@@ -95,6 +94,7 @@ function filterVariables() {
 	    if (!inFilter) { $('#varpicker-'+v).hide(); }
 	});
     }
+    updateFilterCounts(filterIndex);
     stripe('#variables');
 }
 function getComparison() {
