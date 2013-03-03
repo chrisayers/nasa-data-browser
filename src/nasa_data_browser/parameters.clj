@@ -41,11 +41,15 @@ select ?variable ?product ?productName {
         product-facts (-> product-query (bounce endpoint) :data)
         products (u/build-relation :variable :product product-facts)
         product-names (u/build-relation :product :productName product-facts)]
-    (letfn [(get-filter [f]
+    (letfn [(get-value [v]
+              (let [name (get names v)]
+                {"value" v
+                 "valueName" (if (nil? name) v name)}))
+            (get-filter [f]
               (let [name (get names f)]
                 {"filter" f
                  "name" (if (nil? name) f name)
-                 "values" (get filter-values f)}))
+                 "values" (->> f (get filter-values) (map get-value))}))
             (get-filters [p] (map get-filter (get filters p)))
             (get-parameter [p]
               (let [name (get names p)]

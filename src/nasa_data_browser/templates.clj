@@ -9,8 +9,8 @@
      <strong id='{{filter}}'>{{name}}</strong> 
      <br> 
      {{#each values}} 
-       <input type='checkbox' value='{{../filter}},{{this}}'/> 
-       <label filt='{{../filter}},{{this}}' for='{{this}}'>{{this}}</label> 
+       <input type='checkbox' value='{{../filter}},{{value}}'/> 
+       <label filt='{{../filter}},{{value}}' for='{{valueName}}'>{{valueName}}</label> 
        <br> 
      {{/each}} 
     </div> 
@@ -38,7 +38,7 @@
     <td>{{parameterName}}</td>
     <td>
      {{#each products}}
-     <p>{{name}}</p>
+     <a uuid='{{product}}' class='infoLink' href='#'>{{name}}</a>
      {{/each}}
     </td>
    </tr>
