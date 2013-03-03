@@ -32,7 +32,11 @@
     display: inline-block;
 }
 #compare {
-    
+    display:inline-block;
+    font-family:arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;    
 }
 .filterValues {
     margin-bottom: 10px;
