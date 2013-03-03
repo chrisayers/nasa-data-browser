@@ -53,16 +53,25 @@
 <html>
 <head>
  <title>Comparison</title>
- <link rel=stylesheet href='css/tables.css' type='text/css'>
+ <link rel='stylesheet' type='text/css' href='http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css'>
+<script type='text/javascript' charset='utf8' src='http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js'></script>
+<script type='text/javascript' charset='utf8' src='http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js'></script>
+<script type='text/javascript' charset='utf-8'>
+  $(document).ready(function() { $('#compTable').dataTable(); });
+</script>
+ 
 </head>
 <body>
- <div class='CSSTableGenerator'>
-  <table>
+ <div>
+  <table id='compTable'>
+  <thead>
    <tr>
     {{#each relations}}
-     <td>{{this}}</td>
+     <th>{{this}}</th>
     {{/each}}
    </tr>
+  </thead>
+  <tbody>
   {{#each variables}}
    <tr>
      {{#each quickFacts}}
@@ -70,6 +79,7 @@
      {{/each}}
    </tr>
   {{/each}}
+  </tbody>
   </table>
  </div>
 </body>
