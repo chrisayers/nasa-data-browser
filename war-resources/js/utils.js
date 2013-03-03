@@ -51,8 +51,13 @@ function updateFilterCounts(filtIndex) {
 	    num= intersect_all(indivFilters).length;
 	}
 	else { num= filtIndex[filt].length; }
-	var result= $(this).attr('for')+' ('+num+')';
-	$(this).text(result);
+	if (num > 0) {
+	    var result= $(this).attr('for')+' ('+num+')';
+	    $(this).text(result).parent().show();
+	}
+	else {
+	    $(this).parent().slideUp();
+	}	
     });
 }
 function processFiltValue(item) {

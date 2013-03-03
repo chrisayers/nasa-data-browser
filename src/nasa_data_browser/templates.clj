@@ -9,9 +9,11 @@
      <strong id='{{filter}}'>{{name}}</strong> 
      <br> 
      {{#each values}} 
+      <div>
        <input type='checkbox' value='{{../filter}},{{value}}'/> 
        <label filt='{{../filter}},{{value}}' for='{{valueName}}'>{{valueName}}</label> 
-       <br> 
+       <br>
+      </div> 
      {{/each}} 
     </div> 
   {{/each}} 
