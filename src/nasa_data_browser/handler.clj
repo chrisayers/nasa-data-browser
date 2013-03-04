@@ -13,7 +13,7 @@
             [nasa-data-browser.info :as info]
             [nasa-data-browser.utils :as u]))
 (def endpoint "http://localhost:8080/openrdf-sesame/repositories/nasa")
-(comment (def endpoint "http://sesame-sleepydog.elasticbeanstalk.com/repositories/nasa"))
+(comment (def endpoint "http://sesame-sleepydog.elasticbeanstalk.com/repositories/odisees"))
 
 (defroutes app-routes
   (GET "/templates/:view" [view]       
