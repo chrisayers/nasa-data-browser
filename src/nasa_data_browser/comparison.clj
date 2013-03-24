@@ -29,11 +29,12 @@ bind (strafter(str(?relUri), '#') as ?rel)
         value-names (u/build-relation :value :valueName facts)]
     (letfn [(get-rel-info [var rel]
               (let [rel-name (-> (get rel-names rel) first)
-                    value (->> (get values [var rel]) (str/join ", "))
-                    value-trunc (-> value (str/split #"#") last)
-                    value-name (-> (get value-names value) first)]
+                    value (get values [var rel])
+                    value-named (map #(if (contains? value-names %)
+                                        (first (get value-names %))
+                                        (last (str/split % #"#"))) value)]
                 {"relation" (if (nil? rel-name) rel rel-name)
-                 "value" (if (nil? value-name) value-trunc value-name)}))
+                 "value" (str/join ", " value-named)}))
             (get-var-info [variable]
               (let [name (-> (get variable-names variable) first)]
                     {"variable" variable
