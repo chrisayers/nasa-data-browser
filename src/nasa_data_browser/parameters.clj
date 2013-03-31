@@ -22,7 +22,7 @@ select distinct ?rootParameter ?parameterUri ?filter ?filterValue
 (def product-query
   (str u/prefix "
 select ?variable ?product ?productName {
-  ?variableUri :product ?productUri .
+  ?variableUri :dataSet ?productUri .
   optional { ?productUri rdfs:label ?productName } .
   bind (strafter(str(?variableUri), '#') as ?variable) .
   bind (strafter(str(?productUri), '#') as ?product) }
