@@ -25,14 +25,16 @@ bind (strafter(str(?relUri), '#') as ?rel)
         values (u/build-relation :rel :value facts)
         value-names (u/build-relation :value :valueName facts)]
     (letfn [(get-value-name [value]
-              (let [value-trunc (-> value (str/split #"#") last)
-                    value-name (-> (get value-names value) first)]
-                (if (nil? value-name) value-trunc value-name)))
+              (if (string? value)
+                (let [value-trunc (-> value (str/split #"#") last)
+                      value-name (-> (get value-names value) first)]
+                  (if (nil? value-name) value-trunc value-name))
+                value))
             (get-rel-info [rel]
               (let [rel-name (-> (get relation-names rel) first)
                     value (-> (map get-value-name (get values rel)))]
                 {"relation" (if (nil? rel-name) rel rel-name)
-                 "value" (if (= (count value) 1) (first value) value)}))]
+                 "value" (if (coll? value) (str/join ", " value) value)}))]
       {"uuid" item
        "name" (if (nil? item-name) item item-name)
        "facts" (map get-rel-info (get relations item))})))
