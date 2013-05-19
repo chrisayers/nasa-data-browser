@@ -60,6 +60,31 @@ function updateFilterCounts(filtIndex) {
 	}	
     });
 }
+function updateFilterCountsMobile(filtIndex) {
+    var checked=$("input.filter-value[type='checkbox']:checked")
+	.map(function () { return this.value; }).get();    
+    $('#filter-container fieldset div.ui-checkbox label').each(function(i) {
+	var filt= processFiltValue($(this).attr('filt'));
+	var num;
+	if (checked.length > 0) {
+	    var X= [];
+	    $.each(checked, function(j, item) { X.push(processFiltValue(item)); });
+	    X.push(filt);
+	    var indivFilters= [];
+	    $.each(X, function(i, v) { indivFilters.push(filterIndex[v]); });
+	    num= intersect_all(indivFilters).length;
+	}
+	else { num= filtIndex[filt].length; }
+	if (num > 0) {
+	    var result= $(this).attr('valueName')+' ('+num+')';
+	    $(this).find('span.ui-btn-inner span.ui-btn-text').text(result);
+	    $(this).parent().show();
+	}
+	else {
+	    $(this).parent().hide();
+	}
+    });
+}
 function processFiltValue(item) {
     var i= item.split(',');
     var theFilter= i[0].split("#")[1];
