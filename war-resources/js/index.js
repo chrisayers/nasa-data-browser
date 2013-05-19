@@ -13,7 +13,7 @@ $(document).ready(setup);
 
 function setup() { 
     $('#compare').hide();
-    if (jQuery.browser.mobile) { window.location.replace(appUrl+'/mobile.html'); }
+    if (jQuery.browser.mobile) { window.location.replace(webUrl+'/mobile.html'); }
     else { getTemplates('desktop'); }
 }
 function getTemplates(view) {
