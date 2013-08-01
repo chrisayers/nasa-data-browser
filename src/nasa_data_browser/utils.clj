@@ -2,7 +2,7 @@
   (:require [clojure.set :as set]            
             [clojure.data.json :as json]))
 
-(def prefix  "prefix : <http://www.flyingsandbox.com/2012/es#> 
+(def prefix  "prefix : <http://www.flyingsandbox.com/2013/nasa-es#> 
               prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ")
 (defn from-set [s]
   (if (set? s) (first s) s))
