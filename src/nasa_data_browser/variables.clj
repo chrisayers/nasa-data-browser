@@ -4,28 +4,22 @@
 
 (defn var-query [parameter]
   (str u/prefix "
-select distinct ?variable ?variableName ?parameter ?paramName { 
+select distinct ?variable ?variableName ?parameter ?paramName ?filterObjects { 
  ?parameterUri rdfs:subClassOf* :"parameter" .
  ?variableUri :parameter ?parameterUri .
- ?variableUri ?filterUri ?objectUri . 
- ?filterUri :searchFilterFor ?x .
  optional { ?variableUri rdfs:label ?variableName } .
  optional { ?parameterUri rdfs:label ?paramName } .
  bind (strafter(str(?variableUri), '#') as ?variable)
  bind (strafter(str(?parameterUri), '#') as ?parameter)
-} order by ?variable
-"))
-(defn filt-query [parameter]
-  (str u/prefix "
-select distinct ?variable ?filterObject { 
- ?parameterUri rdfs:subClassOf* :"parameter" .
- ?variableUri :parameter ?parameterUri .
- ?variableUri ?filterUri ?objectUri . 
- ?filterUri :searchFilterFor ?x .
- bind (strafter(str(?variableUri), '#') as ?variable)
- bind (strafter(str(?filterUri), '#') as ?filter)
- bind (strafter(str(?objectUri), '#') as ?object)
- bind (concat(?filter, '#', ?object) as ?filterObject)
+ { select ?variableUri (group_concat(?filterObject; separator=',,,') as ?filterObjects) {
+   { select distinct ?variableUri ?filterObject {
+     ?variableUri ?filterUri ?objectUri . 
+     ?filterUri :searchFilterFor ?x .
+     bind (strafter(str(?filterUri), '#') as ?filter)
+     bind (strafter(str(?objectUri), '#') as ?object)
+     bind (concat(?filter, '#', ?object) as ?filterObject)
+   }}
+  } group by ?variableUri }
 } order by ?variable
 "))
 
@@ -35,8 +29,7 @@ select distinct ?variable ?filterObject {
         var-names (u/build-relation :variable :variableName facts)
         params (u/build-relation :variable :parameter facts)
         param-names (u/build-relation :parameter :paramName facts)
-        filt-facts (-> parameter filt-query (bounce endpoint) :data)
-        filts (u/build-relation :filterObject :variable filt-facts)]
+        filts (u/build-relation :filterObjects ",,," :variable facts)]
     (letfn [(get-var-info [var]
               (let [param (-> (get params var) first)
                     param-name (-> (get param-names param) first)

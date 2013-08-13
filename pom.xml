@@ -4,14 +4,20 @@
   <groupId>nasa-data-browser</groupId>
   <artifactId>nasa-data-browser</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1</version>
   <name>nasa-data-browser</name>
-  <description>FIXME: write description</description>
-  <url>http://example.com/FIXME</url>
+  <description>Web app for browsing nasa data sources</description>
+  <url>http://github.com/ryankohl/nasa-data-browser</url>
+  <licenses>
+    <license>
+      <name>Eclipse Public License</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+  </licenses>
   <scm>
     <connection>scm:git:git://github.com/ryankohl/nasa-data-browser.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/ryankohl/nasa-data-browser.git</developerConnection>
-    <tag>04d8bb545452d16b7e90f180527af5578275d40b</tag>
+    <tag>f3e2a0765e68975aa0078d6e302a0d7b5109fcb6</tag>
     <url>https://github.com/ryankohl/nasa-data-browser</url>
   </scm>
   <build>
