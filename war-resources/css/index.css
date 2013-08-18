@@ -10,6 +10,10 @@
     margin-top: 50px;
     float: left;
 }
+#search-form {
+   margin-top: 50px;
+   float: right;
+}
 #bottom {
     clear: both;
 }

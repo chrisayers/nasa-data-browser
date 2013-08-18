@@ -12,25 +12,28 @@
             [nasa-data-browser.comparison :as comparison]
             [nasa-data-browser.info :as info]
             [nasa-data-browser.utils :as u]))
-(comment (def endpoint "http://localhost:8080/openrdf-sesame/repositories/nasa"))
-(def endpoint "http://nasa-sesame.elasticbeanstalk.com/repositories/nasa")
+(def endpoint "http://localhost:8080/openrdf-sesame/repositories/nasa")
+(comment (def endpoint "http://nasa-sesame.elasticbeanstalk.com/repositories/nasa"))
 
 (defroutes app-routes
   (GET "/templates/:view" [view]       
-       (-> (templates/get-data view)
-           u/json-response))
+       (-> (templates/get-data view) u/json-response))
   (GET "/parameters" []
-       (-> (parameters/get-data endpoint)
-           u/json-response))
-  (GET "/variables/:parameter" [parameter]
-       (-> (variables/get-data parameter endpoint)
-           u/json-response))
+       (-> (parameters/get-data endpoint) u/json-response))
+  (GET "/variables" {params :params}
+       (if (every? params [:parameter :keyword])
+         (-> (variables/get-data (:parameter params) 
+                                 (:keyword params)
+                                 endpoint) 
+             u/json-response)
+         (if (contains? params :parameter)           
+           (-> (variables/get-data (:parameter params) endpoint)
+               u/json-response)
+           (println params))))
   (GET "/comparison" {{vars :vars} :params}
-       (-> (comparison/get-data vars endpoint)
-           u/json-response))
+       (-> (comparison/get-data vars endpoint) u/json-response))
   (GET "/info/:item" [item]
-       (-> (info/get-data item endpoint)
-           u/json-response))
+       (-> (info/get-data item endpoint) u/json-response))
   (route/resources "/")
   (route/not-found "Not Found"))
   

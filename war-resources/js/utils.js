@@ -1,5 +1,5 @@
-//var webUrl= "http://localhost:8080";
-var webUrl= "http://nasa-sleepydog.elasticbeanstalk.com";
+var webUrl= "http://localhost:8080";
+//var webUrl= "http://nasa-sleepydog.elasticbeanstalk.com";
 var appUrl= webUrl+"/data";
 var templatesUrl= appUrl+"/templates";
 var parametersUrl= appUrl+"/parameters";
@@ -11,7 +11,9 @@ function intersect_all(lists) {
     if (lists.length === 0) return [];
     else if (lists.length === 1) return lists[0];
     var partialInt = lists[0];
+    if (typeof partialInt === 'undefined') return [];
     for (var i = 0; i < lists.length; i++) {
+	if (typeof lists[i] === 'undefined') return [];
 	partialInt = intersection(partialInt, lists[i]);
     }
     return partialInt;
@@ -40,18 +42,26 @@ function stripe(tableid) {
 function updateFilterCounts(filtIndex) {
     var checked=$(".filterValues input[type='checkbox']:checked")
 	.map(function () { return this.value; }).get();
+
     $('#parameters div.ui-accordion-content-active div label').each(function(i) {
 	var filt= processFiltValue($(this).attr('filt'));
 	var num;
 	if (checked.length > 0) {
+
 	    var X= [];
 	    $.each(checked, function(j, item) { X.push(processFiltValue(item)); });
 	    X.push(filt);
 	    var indivFilters= [];
-	    $.each(X, function(i, v) { indivFilters.push(filterIndex[v]); });
+	    $.each(X, function(i, v) { 
+		if (v in filterIndex) { indivFilters.push(filterIndex[v]); }
+		else { indivFilters.push([]); }
+	    });
 	    num= intersect_all(indivFilters).length;
 	}
-	else { num= filtIndex[filt].length; }
+	else { 
+	    if (!(filt in filtIndex)) { num= 0; }
+	    else { num= filtIndex[filt].length; }
+	}
 	if (num > 0) {
 	    var result= $(this).attr('for')+' ('+num+')';
 	    $(this).text(result).parent().show();
