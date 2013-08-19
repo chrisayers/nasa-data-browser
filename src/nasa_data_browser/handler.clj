@@ -13,7 +13,9 @@
             [nasa-data-browser.info :as info]
             [nasa-data-browser.utils :as u]))
 (def endpoint "http://localhost:8080/openrdf-sesame/repositories/nasa")
+(def compiled "http://localhost:8080/openrdf-sesame/repositories/compile")
 (comment (def endpoint "http://nasa-sesame.elasticbeanstalk.com/repositories/nasa"))
+(comment (def compiled "http://nasa-sesame.elasticbeanstalk.com/repositories/compile"))
 
 (defroutes app-routes
   (GET "/templates/:view" [view]       
@@ -24,12 +26,11 @@
        (if (every? params [:parameter :keyword])
          (-> (variables/get-data (:parameter params) 
                                  (:keyword params)
-                                 endpoint) 
+                                 compiled) 
              u/json-response)
          (if (contains? params :parameter)           
-           (-> (variables/get-data (:parameter params) endpoint)
-               u/json-response)
-           (println params))))
+           (-> (variables/get-data (:parameter params) compiled)
+               u/json-response))))
   (GET "/comparison" {{vars :vars} :params}
        (-> (comparison/get-data vars endpoint) u/json-response))
   (GET "/info/:item" [item]

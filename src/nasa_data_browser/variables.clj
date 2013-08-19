@@ -6,48 +6,28 @@
   ([parameter]
      (str u/prefix "
 select distinct ?variable ?variableName ?parameter ?paramName ?filterObjects { 
- ?parameterUri rdfs:subClassOf* :"parameter" .
- ?variableUri :parameter ?parameterUri .
- { select ?variableUri (group_concat(?filterObject; separator=',,,') as ?filterObjects) {
-   { select distinct ?variableUri ?filterObject {
-     ?variableUri ?filterUri ?objectUri . 
-     ?filterUri :searchFilterFor ?x .
-     bind (strafter(str(?filterUri), '#') as ?filter)
-     bind (strafter(str(?objectUri), '#') as ?object)
-     bind (concat(?filter, '#', ?object) as ?filterObject)
-   }}
-  } group by ?variableUri }
- optional { ?variableUri :variableName/rdfs:label ?alt1 } .
- optional { ?variableUri rdfs:label ?alt2 } .
- optional { ?parameterUri rdfs:label ?paramName } .
- bind (strafter(str(?variableUri), '#') as ?variable) .
- bind (coalesce(?alt1, ?alt2, ?variable, 'missing') as ?variableName) .
- bind (lcase(?variableName) as ?lcVarName) .
- bind (strafter(str(?parameterUri), '#') as ?parameter) .
+  ?v a :Variable ;
+     :paramClass :"parameter" ;
+     :ontName ?variable ;
+     :varName ?variableName ;
+     :param ?parameter ;
+     :paramName ?paramName ;
+     :filters ?filterObjects .
+  bind (lcase(?variableName) as ?lcVarName) .
 } order by desc(?lcVarName)
 "))
   ([parameter keyword]
      (str u/prefix "
 select distinct ?variable ?variableName ?parameter ?paramName ?filterObjects { 
- ?parameterUri rdfs:subClassOf* :"parameter" .
- ?variableUri :parameter ?parameterUri .
- { select ?variableUri (group_concat(?filterObject; separator=',,,') as ?filterObjects) {
-   { select distinct ?variableUri ?filterObject {
-     ?variableUri ?filterUri ?objectUri . 
-     ?filterUri :searchFilterFor ?x .
-     bind (strafter(str(?filterUri), '#') as ?filter)
-     bind (strafter(str(?objectUri), '#') as ?object)
-     bind (concat(?filter, '#', ?object) as ?filterObject)
-   }}
-  } group by ?variableUri } 
- optional { ?variableUri :variableName/rdfs:label ?alt1 } .
- optional { ?variableUri rdfs:label ?alt2 } .
- optional { ?parameterUri rdfs:label ?paramName } .
- bind (strafter(str(?variableUri), '#') as ?variable) .
- bind (coalesce(?alt1, ?alt2, ?variable, 'missing') as ?variableName) .
- bind (lcase(?variableName) as ?lcVarName) .
- bind (strafter(str(?parameterUri), '#') as ?parameter) .
- filter(contains(lcase(?variableName), lcase('"keyword"'))) .
+  ?v a :Variable ;
+     :paramClass :"parameter" ;
+     :ontName ?variable ;
+     :varName ?variableName ;
+     :param ?parameter ;
+     :paramName ?paramName ;
+     :filters ?filterObjects .
+  bind (lcase(?variableName) as ?lcVarName) .
+  filter(contains(lcase(?variableName), lcase('"keyword"'))) .
 } order by desc(?lcVarName)
 ")))
 
