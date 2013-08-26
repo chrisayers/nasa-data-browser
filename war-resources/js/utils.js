@@ -1,5 +1,5 @@
-var webUrl= "http://localhost:8080";
-//var webUrl= "http://nasa-sleepydog.elasticbeanstalk.com";
+//var webUrl= "http://localhost:8080";
+var webUrl= "http://nasa-sleepydog.elasticbeanstalk.com";
 var appUrl= webUrl+"/data";
 var templatesUrl= appUrl+"/templates";
 var parametersUrl= appUrl+"/parameters";

@@ -1,5 +1,7 @@
+body {
+    background-image: url('../images/NASA-background.jpg');
+}
 #top {
-
    height: 178px;
 }
 #nasalogo { 
@@ -20,6 +22,9 @@
 #parameters {	
     float: left;
     margin: 20px;
+}
+#parameters > h3 {
+    border: 1px;
 }
 #content {
     float: left;

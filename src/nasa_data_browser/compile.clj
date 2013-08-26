@@ -31,4 +31,52 @@ construct { ?variableUri a :Variable .
 }
 "))
 
-(comment (stash (pull var-pull endpoint) "/home/foo/vars.nt"))
+(def param-pull (str u/prefix "
+construct { _:x a :Parameter ;
+               :parameter ?rootParameter ;
+               :paramLabel ?parameterLabel ;
+               :relativeFilter ?relativeFilter ;
+               :filterLabel ?filterLabel ;
+               :filterValue ?filterValue ;
+               :valueLabel ?filterValueLabel }
+where {
+{ select distinct ?rootParameter ?parameterLabel ?relativeFilter
+                  ?filterLabel ?filterValue ?filterValueLabel {
+  ?parameterClass :properDirectSubclassOf :ScienceParameter .
+  ?parameterUri rdfs:subClassOf* ?parameterClass . 
+  ?filterUri :searchFilterFor ?parameterClass . 
+  ?var :parameter ?parameterUri . 
+  ?var ?filterUri ?filterValueUri .
+  optional { ?parameterClass rdfs:label ?parameterName } .
+  optional { ?filterUri rdfs:label ?filterName } .
+  optional { ?filterValueUri rdfs:label ?filterValueName } .
+  bind (strafter(str(?parameterClass), '#') as ?rootParameter) .
+  bind (coalesce(?parameterName, ?rootParameter) as ?parameterLabel) .
+  bind (strafter(str(?filterUri), '#') as ?filter) .
+  bind (concat(?rootParameter, '#', ?filter) as ?relativeFilter) .
+  bind (coalesce(?filterName, ?relativeFilter) as ?filterLabel) .
+  bind (strafter(str(?filterValueUri), '#') as ?filterValue) .
+  bind (coalesce(?filterValueName, ?filterValue) as ?filterValueLabel)
+}}}
+"))
+
+(def prod-pull (str u/prefix "
+construct { _:x a :Product ;
+                :variable ?variable ;
+                :product ?product ;
+                :label ?productLabel } 
+where {
+{ select distinct ?variable ?product ?productLabel {
+  ?variableUri :dataSet ?productUri .
+  optional { ?productUri rdfs:label ?productName } .
+  bind (strafter(str(?variableUri), '#') as ?variable) . 
+  bind (strafter(str(?productUri), '#') as ?product) .
+  bind (coalesce(?productName, ?product) as ?productLabel)
+}}}
+"))
+
+(comment (stash (build
+                 (pull var-pull endpoint)
+                 (pull param-pull endpoint)
+                 (pull prod-pull endpoint))
+                "/Users/ryan/compiled.nt"))

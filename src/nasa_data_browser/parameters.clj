@@ -3,30 +3,25 @@
   (:require [nasa-data-browser.utils :as u]))
 (def hierarchy-query
   (str u/prefix "
-select distinct ?rootParameter ?parameterUri ?filter ?filterValue
-  ?parameterLabel ?filterLabel ?filterValueLabel ?relativeFilter { 
-  ?parameterClass :properDirectSubclassOf :ScienceParameter .
-  ?parameterUri rdfs:subClassOf* ?parameterClass . 
-  ?filterUri :searchFilterFor ?parameterClass . 
-  ?var :parameter ?parameterUri . 
-  ?var ?filterUri ?filterValueUri .
-  optional { ?parameterClass rdfs:label ?parameterLabel } .
-  optional { ?filterUri rdfs:label ?filterLabel } .
-  optional { ?filterValueUri rdfs:label ?filterValueLabel } .
-  bind (strafter(str(?parameterClass), '#') as ?rootParameter)
-  bind (strafter(str(?filterUri), '#') as ?filter)
-  bind (strafter(str(?filterValueUri), '#') as ?filterValue)
-  bind (concat(?rootParameter, '#', ?filter) as ?relativeFilter)
-} order by ?rootParameter
+select distinct ?rootParameter ?relativeFilter ?filterValue 
+                ?parameterLabel ?filterLabel ?filterValueLabel {
+  ?x a :Parameter ; 
+     :parameter ?rootParameter ;
+     :paramLabel ?parameterLabel ;
+     :relativeFilter ?relativeFilter ;
+     :filterLabel ?filterLabel ;
+     :filterValue ?filterValue ;
+     :valueLabel ?filterValueLabel } 
 "))
 (def product-query
   (str u/prefix "
 select ?variable ?product ?productName {
-  ?variableUri :dataSet ?productUri .
-  optional { ?productUri rdfs:label ?productName } .
-  bind (strafter(str(?variableUri), '#') as ?variable) .
-  bind (strafter(str(?productUri), '#') as ?product) }
+  ?x a :Product ;
+     :variable ?variable ;
+     :product ?product ;
+     :label ?productName }
 "))
+
 (defn get-data [endpoint]
   (let [facts (-> hierarchy-query (bounce endpoint) :data)
         parameters (into #{} (map :rootParameter facts))
@@ -44,17 +39,17 @@ select ?variable ?product ?productName {
     (letfn [(get-value [v]
               (let [name (get names v)]
                 {"value" v
-                 "valueName" (if (nil? name) v name)}))
+                 "valueName" name}))
             (get-filter [f]
               (let [name (get names f)]
                 {"filter" f
-                 "name" (if (nil? name) f name)
+                 "name" name
                  "values" (->> f (get filter-values) (map get-value))}))
             (get-filters [p] (map get-filter (get filters p)))
             (get-parameter [p]
               (let [name (get names p)]
                 {"parameter" p
-                 "name"  (if (nil? name) p name)
+                 "name" name
                  "filters" (get-filters p)}))]
       {"parameters" (map get-parameter parameters)
        "hasProduct" products
