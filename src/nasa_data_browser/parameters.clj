@@ -13,14 +13,7 @@ select distinct ?rootParameter ?relativeFilter ?filterValue
      :filterValue ?filterValue ;
      :valueLabel ?filterValueLabel } 
 "))
-(def product-query
-  (str u/prefix "
-select ?variable ?product ?productName {
-  ?x a :Product ;
-     :variable ?variable ;
-     :product ?product ;
-     :label ?productName }
-"))
+
 
 (defn get-data [endpoint]
   (let [facts (-> hierarchy-query (bounce endpoint) :data)
@@ -32,10 +25,7 @@ select ?variable ?product ?productName {
                    (u/build-relation :rootParameter :parameterLabel facts)
                    (u/build-relation :relativeFilter :filterLabel facts)
                    (u/build-relation :filterValue :filterValueLabel facts))
-        names (u/map-on-vals name-sets u/from-set)
-        product-facts (-> product-query (bounce endpoint) :data)
-        products (u/build-relation :variable :product product-facts)
-        product-names (u/build-relation :product :productName product-facts)]
+        names (u/map-on-vals name-sets u/from-set)]
     (letfn [(get-value [v]
               (let [name (get names v)]
                 {"value" v
@@ -51,6 +41,4 @@ select ?variable ?product ?productName {
                 {"parameter" p
                  "name" name
                  "filters" (get-filters p)}))]
-      {"parameters" (map get-parameter parameters)
-       "hasProduct" products
-       "hasProductName" product-names})))
+      {"parameters" (map get-parameter parameters)})))

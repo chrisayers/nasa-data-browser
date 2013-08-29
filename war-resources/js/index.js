@@ -32,13 +32,19 @@ function setTemplates(data) {
     getInfoContent= Handlebars.compile(data.info);
     $("#compare").click(getComparison);
     getParameters();
+    getProducts();
+}
+function getProducts() {
+    $.getJSON(productsUrl, setProducts);
+}
+function setProducts(data) {
+    productIndex= data.hasProduct;
+    productNames= data.hasProductName;
 }
 function getParameters() { 
     $.getJSON(parametersUrl, setParameters); 
 }
-function setParameters(data) {
-    productIndex= data.hasProduct;
-    productNames= data.hasProductName;
+function setParameters(data) {    
     $('#parameters').html(getParametersContent(data));
     $('#parameters').unbind();
     $('#parameters').accordion(accordionOptions);
