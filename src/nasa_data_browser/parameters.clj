@@ -1,6 +1,7 @@
 (ns nasa-data-browser.parameters
   (:use [seabass core])
   (:require [nasa-data-browser.utils :as u]))
+
 (def hierarchy-query
   (str u/prefix "
 select distinct ?rootParameter ?relativeFilter ?filterValue 

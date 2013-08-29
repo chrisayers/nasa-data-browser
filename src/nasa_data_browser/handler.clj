@@ -10,6 +10,8 @@
             [nasa-data-browser.parameters :as parameters]
             [nasa-data-browser.products :as products]
             [nasa-data-browser.variables :as variables]
+            [nasa-data-browser.programs :as programs]
+            [nasa-data-browser.datasets :as datasets]
             [nasa-data-browser.comparison :as comparison]
             [nasa-data-browser.info :as info]
             [nasa-data-browser.utils :as u]))
@@ -34,6 +36,10 @@
          (if (contains? params :parameter)           
            (-> (variables/get-data (:parameter params) compiled)
                u/json-response))))
+  (GET "/programs" []
+       (-> (programs/get-data endpoint) u/json-response))
+  (GET "/datasets/:program" [program]
+       (-> (datasets/get-data program endpoint) u/json-response))
   (GET "/comparison" {{vars :vars} :params}
        (-> (comparison/get-data vars endpoint) u/json-response))
   (GET "/info/:item" [item]
