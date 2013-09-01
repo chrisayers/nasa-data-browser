@@ -31,11 +31,19 @@
        (if (every? params [:parameter :keyword])
          (-> (variables/get-data (:parameter params) 
                                  (:keyword params)
-                                 compiled) 
+                                 compiled)
              u/json-response)
          (if (contains? params :parameter)           
            (-> (variables/get-data (:parameter params) compiled)
                u/json-response))))
+  (POST "/variables" {params :params}
+        (if (every? params [:name :datasets :filterValues])
+          (-> (variables/create (:name params)
+                                (:datasets params)
+                                (:filterValues params)
+                                endpoint
+                                compiled)
+              u/json-response)))
   (GET "/programs" []
        (-> (programs/get-data endpoint) u/json-response))
   (GET "/datasets/:program" [program]

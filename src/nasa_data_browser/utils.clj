@@ -5,6 +5,10 @@
 
 (def prefix  "prefix : <http://www.flyingsandbox.com/2013/nasa-es#> 
               prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ")
+(defn rdf [x] (str "http://www.w3.org/1999/02/22-rdf-syntax-ns#" x))
+(defn rdfs [x] (str "http://www.w3.org/2000/01/rdf-schema#" x))
+(defn fly [x] (str "http://www.flyingsandbox.com/2013/nasa-es#" x))
+
 (defn from-set [s]
   (if (set? s) (first s) s))
 (defn map-on-vals [m f]

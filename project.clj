@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [compojure "1.1.5"]
                  [org.clojure/data.json "0.2.1"]
-                 [seabass "2.0"]
+                 [seabass "2.1.1"]
                  ]
   :plugins [[lein-ring "0.8.2"]]
   :ring {:handler nasa-data-browser.handler/app

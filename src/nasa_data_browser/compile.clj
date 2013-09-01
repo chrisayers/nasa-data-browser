@@ -75,8 +75,11 @@ where {
 }}}
 "))
 
-(comment (stash (build
-                 (pull var-pull endpoint)
-                 (pull param-pull endpoint)
-                 (pull prod-pull endpoint))
-                "/Users/ryan/compiled.nt"))
+(comment 
+(def endpoint "http://nasa-sesame.elasticbeanstalk.com/repositories/nasa")
+(stash (build
+        (pull var-pull endpoint)
+        (pull param-pull endpoint)
+        (pull prod-pull endpoint))
+       "/Users/ryan/compiled.nt")
+)
