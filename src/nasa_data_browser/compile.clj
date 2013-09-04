@@ -9,6 +9,7 @@ construct { ?variableUri a :Variable .
             ?variableUri :varName ?variableName .
             ?variableUri :param ?parameter .
             ?variableUri :paramName ?paramName .
+            ?variableUri :product ?product .
             ?variableUri :filters ?filterObjects } where {
  ?paramClass :properDirectSubclassOf :ScienceParameter .
  ?parameterUri rdfs:subClassOf* ?paramClass .
@@ -25,6 +26,9 @@ construct { ?variableUri a :Variable .
  optional { ?variableUri :variableName/rdfs:label ?alt1 } .
  optional { ?variableUri rdfs:label ?alt2 } .
  optional { ?parameterUri rdfs:label ?paramName } .
+ optional { select ?variableUri ?product 
+   { ?variableUri :dataSet ?product } limit 1
+ } 
  bind (strafter(str(?variableUri), '#') as ?variable) .
  bind (coalesce(?alt1, ?alt2, ?variable, 'missing') as ?variableName) .
  bind (strafter(str(?parameterUri), '#') as ?parameter) .

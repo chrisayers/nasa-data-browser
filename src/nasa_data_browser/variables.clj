@@ -13,8 +13,10 @@ select distinct ?variable ?variableName ?parameter ?paramName ?filterObjects {
      :param ?parameter ;
      :paramName ?paramName ;
      :filters ?filterObjects .
+  optional { ?v :product ?product 
+             bind (lcase(str(?product)) as ?lcProduct) . }
   bind (lcase(?variableName) as ?lcVarName) .
-} order by desc(?lcVarName)
+} order by desc(?lcProduct) desc(?lcVarName)
 "))
   ([parameter keyword]
      (str u/prefix "
