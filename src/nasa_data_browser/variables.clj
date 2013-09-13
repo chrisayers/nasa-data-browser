@@ -5,29 +5,26 @@
 (defn var-query 
   ([parameter]
      (str u/prefix "
-select distinct ?variable ?variableName ?parameter ?paramName ?filterObjects { 
+select distinct ?variable ?variableName ?description ?project ?filterObjects { 
   ?v a :Variable ;
      :paramClass :"parameter" ;
-     :ontName ?variable ;
      :varName ?variableName ;
-     :param ?parameter ;
-     :paramName ?paramName ;
+     :description ?description ;
+     :project ?project ;
      :filters ?filterObjects .
-  optional { ?v :product ?product 
-             bind (lcase(str(?product)) as ?lcProduct) . }
+  bind (replace(str(?variableName), ' ', '') as ?variable) .
   bind (lcase(?variableName) as ?lcVarName) .
-} order by desc(?lcProduct) desc(?lcVarName)
+} order by desc(?lcVarName)
 "))
   ([parameter keyword]
      (str u/prefix "
-select distinct ?variable ?variableName ?parameter ?paramName ?filterObjects { 
+select distinct ?variable ?variableName ?description ?project ?filterObjects { 
   ?v a :Variable ;
      :paramClass :"parameter" ;
-     :ontName ?variable ;
      :varName ?variableName ;
-     :param ?parameter ;
-     :paramName ?paramName ;
+     :description ?description ;
      :filters ?filterObjects .
+  bind (replace(str(?variableName), ' ', '') as ?variable) .
   bind (lcase(?variableName) as ?lcVarName) .
   filter(contains(lcase(?variableName), lcase('"keyword"'))) .
 } order by desc(?lcVarName)
@@ -38,19 +35,17 @@ select distinct ?variable ?variableName ?parameter ?paramName ?filterObjects {
      (let [
            vars (distinct (into [] (map :variable facts)))
            var-names (u/build-relation :variable :variableName facts)
-           alt-names (u/build-relation :variable :altVarName facts)
-           params (u/build-relation :variable :parameter facts)
-           param-names (u/build-relation :parameter :paramName facts)
+           descrips (u/build-relation :variable :description facts)
+           projects (u/build-relation :variable :project facts)
            filts (u/build-relation :filterObjects ",,," :variable facts)]
      (letfn [(get-var-info [var]
-               (let [param (-> (get params var) first)
-                     param-name (-> (get param-names param) first)
-                     var-name (-> (get var-names var) first)]
-                 {"uuid" var
-                  "variable" var
+               (let [var-name (-> (get var-names var) first)
+                     descrip (-> (get descrips var) first)
+                     project (-> (get projects var) first)]
+                 {"variable" var
                   "variableName" var-name
-                  "parameter" param
-                  "parameterName" (if (nil? param-name) param param-name)}))]
+                  "description" descrip
+                  "project" project}))]
        {"filterIndex" filts
         "variables" (map get-var-info vars)})))
 (defn get-data

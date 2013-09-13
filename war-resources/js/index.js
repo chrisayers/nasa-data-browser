@@ -9,6 +9,16 @@ var getVariablesContent;
 var getComparisonContent;
 var getInfoContent;
 var currentParameter;
+var compareHead= "<html><head>"+
+"<title>Comparison</title>"+
+"<link rel='stylesheet' type='text/css' href='http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css'>"+
+"<script type='text/javascript' charset='utf8' src='http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js'></script>"+
+"<script type='text/javascript' charset='utf8' src='http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js'></script>"+
+"<script type='text/javascript' charset='utf-8'>"+
+"$(document).ready(function() { $('#compTable').dataTable(); });"+
+"</script>"+
+"<body>";
+var compareTail= "</body></html>";
 
 $(document).ready(setup);
 
@@ -26,10 +36,14 @@ function getTemplates(view) {
     $.getJSON(templatesUrl+"/"+view, setTemplates); 
 }
 function setTemplates(data) {
-    getParametersContent= Handlebars.compile(data.parameters);
-    getVariablesContent= Handlebars.compile(data.variables);
-    getComparisonContent= Handlebars.compile(data.comparison);
-    getInfoContent= Handlebars.compile(data.info);
+    var paramsTemplate= $('#params-template').html();
+    var varsTemplate= $('#vars-template').html();
+    var compareTemplate= $('#compare-template').html();
+    var infoTemplate= $('#info-template').html();
+    getParametersContent= Handlebars.compile(paramsTemplate);
+    getVariablesContent= Handlebars.compile(varsTemplate);
+    getComparisonContent= Handlebars.compile(compareTemplate);
+    getInfoContent= Handlebars.compile(infoTemplate);
     $("#compare").click(getComparison);
     getParameters();
     getProducts();
@@ -128,7 +142,7 @@ function getComparison() {
 function setComparison(data) {
     var w= window.open('', 'comparison', 'width=600, height=400');
     w.document.open();
-    w.document.write(getComparisonContent(data));
+    w.document.write(compareHead+getComparisonContent(data)+compareTail);
     w.document.close();
     return false;
 }

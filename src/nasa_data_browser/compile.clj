@@ -3,35 +3,31 @@
   (:require [nasa-data-browser.utils :as u]))
 
 (def var-pull (str u/prefix "
-construct { ?variableUri a :Variable .
-            ?variableUri :paramClass ?paramClass .
-            ?variableUri :ontName ?variable .
-            ?variableUri :varName ?variableName .
-            ?variableUri :param ?parameter .
-            ?variableUri :paramName ?paramName .
-            ?variableUri :product ?product .
-            ?variableUri :filters ?filterObjects } where {
- ?paramClass :properDirectSubclassOf :ScienceParameter .
- ?parameterUri rdfs:subClassOf* ?paramClass .
- ?variableUri :parameter ?parameterUri .
+construct { ?variableUri a :Variable ;
+                         :paramClass ?paramClass ;
+                         :variable ?variable ;
+                         :varName ?variableName ;
+                         :description ?label ;
+                         :project ?project ;
+                         :filters ?filterObjects } where {
+ ?variableUri :parameter/rdfs:subClassOf ?paramClass ;
+              :project ?projectUri ;
+              :variableName/rdfs:label ?variableName ;
+              rdfs:label ?label .
+ optional { ?projectUri rdfs:label ?projectName } .
+ bind (strafter(str(?variableUri), '#') as ?variable) .
+ bind (strafter(str(?projectUri), '#') as ?projectTerm) .
+ bind (coalesce(?projectName, ?projectTerm) as ?project) .
  { select ?variableUri (group_concat(?filterObject; separator=',,,') as ?filterObjects) {
    { select distinct ?variableUri ?filterObject {
      ?variableUri ?filterUri ?objectUri . 
      ?filterUri :searchFilterFor ?x .
+     filter(?filterUri != :instrument) .
      bind (strafter(str(?filterUri), '#') as ?filter)
      bind (strafter(str(?objectUri), '#') as ?object)
      bind (concat(?filter, '#', ?object) as ?filterObject)
-   }}
+   } order by ?filterObject }
   } group by ?variableUri }
- optional { ?variableUri :variableName/rdfs:label ?alt1 } .
- optional { ?variableUri rdfs:label ?alt2 } .
- optional { ?parameterUri rdfs:label ?paramName } .
- optional { select ?variableUri ?product 
-   { ?variableUri :dataSet ?product } limit 1
- } 
- bind (strafter(str(?variableUri), '#') as ?variable) .
- bind (coalesce(?alt1, ?alt2, ?variable, 'missing') as ?variableName) .
- bind (strafter(str(?parameterUri), '#') as ?parameter) .
 }
 "))
 
@@ -79,11 +75,12 @@ where {
 }}}
 "))
 
+
 (comment 
 (def endpoint "http://nasa-sesame.elasticbeanstalk.com/repositories/nasa")
 (stash (build
         (pull var-pull endpoint)
         (pull param-pull endpoint)
         (pull prod-pull endpoint))
-       "/Users/ryan/compiled.nt")
+       "/Users/ryan/compiled-test.nt")
 )
