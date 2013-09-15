@@ -30,24 +30,46 @@ select distinct ?variable ?variableName ?description ?project ?filterObjects {
 } order by desc(?lcVarName)
 ")))
 
+(defn details-query [variable-name]
+     (str u/prefix "
+select distinct ?variable ?dataset ?datasetLabel {
+  ?variable :variableName :"variable-name" .
+  optional { ?variable :dataSet ?dset .
+             ?dset rdfs:label ?dsetLabel }
+  bind(coalesce(str(?dset),'') as ?dataset) .
+  bind(coalesce(?dsetLabel, 'None listed') as ?datasetLabel)
+}"))
+
+(defn process-details [facts]
+  (let [vars (distinct (into [] (map :variable facts)))
+        datasets (u/build-relation :variable :dataset facts)
+        names (u/build-relation :dataset :datasetLabel facts)]
+    (letfn [(get-var-info [var]
+              (let [dataset (-> (get datasets var) first)
+                    dataset-name (-> (get names dataset) first)]
+                {"variable" var
+                 "datasetUri" dataset
+                 "datasetName" dataset-name}))]
+      {"variables" (map get-var-info vars)})))
+(defn get-details [variable-name endpoint]
+  (-> variable-name details-query (bounce endpoint) :data process-details))
 
 (defn process-results [facts]
-     (let [
-           vars (distinct (into [] (map :variable facts)))
-           var-names (u/build-relation :variable :variableName facts)
-           descrips (u/build-relation :variable :description facts)
-           projects (u/build-relation :variable :project facts)
-           filts (u/build-relation :filterObjects ",,," :variable facts)]
-     (letfn [(get-var-info [var]
-               (let [var-name (-> (get var-names var) first)
-                     descrip (-> (get descrips var) first)
-                     project (-> (get projects var) first)]
-                 {"variable" var
-                  "variableName" var-name
-                  "description" descrip
-                  "project" project}))]
-       {"filterIndex" filts
-        "variables" (map get-var-info vars)})))
+  (let [vars (distinct (into [] (map :variable facts)))
+        var-names (u/build-relation :variable :variableName facts)
+        descrips (u/build-relation :variable :description facts)
+        projects (u/build-relation :variable :project facts)
+        filts (u/build-relation :filterObjects ",,," :variable facts)]
+    (letfn [(get-var-info [var]
+              (let [var-name (-> (get var-names var) first)
+                    descrip (-> (get descrips var) first)
+                    project (-> (get projects var) first)]
+                {"variable" var
+                 "variableName" var-name
+                 "description" descrip
+                 "project" project}))]
+      {"filterIndex" filts
+       "variables" (map get-var-info vars)})))
 (defn get-data
   ([parameter endpoint]
      (-> parameter var-query (bounce endpoint) :data process-results))
@@ -55,7 +77,7 @@ select distinct ?variable ?variableName ?description ?project ?filterObjects {
      (-> (var-query parameter keyword) (bounce endpoint) :data process-results)))
 
 (defn hashcode [x] (hash (str x (java.util.Date.))))
-         
+
 (defn name-triples [name var-name-uuid]
   (let [t1 (resource-fact (u/fly var-name-uuid) (u/rdf "type") (u/fly "Name"))
         t2 (literal-fact (u/fly var-name-uuid) (u/rdfs "label") name)]
@@ -88,4 +110,3 @@ select distinct ?variable ?variableName ?description ?project ?filterObjects {
 (defn create [variable-name datasets filter-values endpoint compiled]
   (let [facts (get-facts variable-name datasets filter-values)]
     (push endpoint facts)))
-        

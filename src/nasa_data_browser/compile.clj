@@ -3,7 +3,7 @@
   (:require [nasa-data-browser.utils :as u]))
 
 (def var-pull (str u/prefix "
-construct { ?variableUri a :Variable ;
+construct { ?variableNameUri a :Variable ;
                          :paramClass ?paramClass ;
                          :variable ?variable ;
                          :varName ?variableName ;
@@ -12,22 +12,24 @@ construct { ?variableUri a :Variable ;
                          :filters ?filterObjects } where {
  ?variableUri :parameter/rdfs:subClassOf ?paramClass ;
               :project ?projectUri ;
-              :variableName/rdfs:label ?variableName ;
+              :variableName ?variableNameUri ;
               rdfs:label ?label .
+ ?variableNameUri rdfs:label ?variableName .
  optional { ?projectUri rdfs:label ?projectName } .
- bind (strafter(str(?variableUri), '#') as ?variable) .
+ bind (strafter(str(?variableNameUri), '#') as ?variable) .
  bind (strafter(str(?projectUri), '#') as ?projectTerm) .
  bind (coalesce(?projectName, ?projectTerm) as ?project) .
- { select ?variableUri (group_concat(?filterObject; separator=',,,') as ?filterObjects) {
-   { select distinct ?variableUri ?filterObject {
+ { select ?variableNameUri (group_concat(?filterObject; separator=',,,') as ?filterObjects) {
+   { select distinct ?variableNameUri ?filterObject {
      ?variableUri ?filterUri ?objectUri . 
+     ?variableUri :variableName ?variableNameUri .
      ?filterUri :searchFilterFor ?x .
      filter(?filterUri != :instrument) .
      bind (strafter(str(?filterUri), '#') as ?filter)
      bind (strafter(str(?objectUri), '#') as ?object)
      bind (concat(?filter, '#', ?object) as ?filterObject)
    } order by ?filterObject }
-  } group by ?variableUri }
+  } group by ?variableNameUri }
 }
 "))
 

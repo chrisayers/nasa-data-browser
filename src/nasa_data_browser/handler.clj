@@ -36,6 +36,9 @@
          (if (contains? params :parameter)           
            (-> (variables/get-data (:parameter params) compiled)
                u/json-response))))
+  (GET "/details" {params :params}
+       (-> (variables/get-details (:variableName params) endpoint)
+           u/json-response))
   (POST "/variables" {params :params}
         (if (every? params [:name :datasets :filterValues])
           (-> (variables/create (:name params)
