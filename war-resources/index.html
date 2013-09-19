@@ -65,14 +65,14 @@
 	</thead>
 	<tbody>
 	  {{#each variableNames}}
-	  <tr class='variableName'>
-	    <td>{{name}}</td>
+	  <tr class='variableName' var='{{variableName}}' id='varpicker-{{variableName}}'>
+	    <td>{{name}} ({{variables.length}})</td>
 	    <td>{{description}}</td>
 	    <td>{{project}}</td>
 	  </tr>
 	  <tr><td><table><tbody>
 		  {{#each variables}}
-		  <tr class='variable' id='varpicker-{{variable}}' var='{{variable}}'>
+		  <tr class='variable'>
 		    <td> 
 		      <input type='checkbox' value='{{variable}}'/>
 		      <a uuid='{{variable}}' class='infolink' href='#'>{{dataset}}</a> 

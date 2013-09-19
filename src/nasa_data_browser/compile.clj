@@ -17,15 +17,15 @@ construct { ?variableNameUri a :VariableName ;
               rdfs:label ?label .
  optional { ?variableNameUri rdfs:label ?variableLabel } .
  optional { ?projectUri rdfs:label ?projectName } .
- bind (coalesce(?variableLabel, ?variableNameUri) as ?variableName) .
+ bind (strafter(str(?variableNameUri), '#') as ?variableNameTerm) .
+ bind (coalesce(?variableLabel, ?variableNameTerm) as ?variableName) .
  bind (strafter(str(?projectUri), '#') as ?projectTerm) .
  bind (coalesce(?projectName, ?projectTerm) as ?project) .
  { select ?variableNameUri (group_concat(?varInfo; separator=',,,') as ?variables) {
    { select distinct ?variableNameUri ?varInfo {
-
      ?variableUri :variableName ?variableNameUri . 
      optional { ?variableUri :dataSet ?datasetUri .
-                ?datasetUri rdfs:label ?datasetName 
+                ?datasetUri rdfs:label ?datasetName .
                 bind (strafter(str(?datasetUri), '#') as ?datasetTerm) } 
      bind (strafter(str(?variableUri), '#') as ?variableTerm) 
      bind (coalesce(?datasetName, ?datasetTerm, ?variableTerm) as ?dataset) 
@@ -98,6 +98,7 @@ where {
          filepath))
 
 (comment
-(materialize "http://nasa-sesame.elasticbeanstalk.com/repositories/nasa"
-             "/Users/ryan/compiled-test.nt")
+(def dev "http://localhost:8080/openrdf-sesame/repositories/nasa")
+(def prod "http://nasa-sesame.elasticbeanstalk.com/repositories/nasa") 
+(materialize dev "/Users/ryan/compiled-test.nt")
 )

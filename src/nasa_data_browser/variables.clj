@@ -45,22 +45,20 @@ select distinct ?vn ?variableName ?description ?project ?filterObjects
      "dataset" (get info 1)}))
         
 (defn process-results [facts]
-  (let [var-names (distinct (into [] (map :vn facts)))
-        var-terms (u/build-relation :vn :variableTerm facts)
-        names (u/build-relation :vn :variableName facts)
-        descrips (u/build-relation :vn :description facts)
-        projects (u/build-relation :vn :project facts)
+  (let [var-names (distinct (into [] (map :variableName facts)))
+        var-terms (u/build-relation :variableName :variableTerm facts)
+        descrips (u/build-relation :variableName :description facts)
+        projects (u/build-relation :variableName :project facts)
         filts (u/build-relation :filterObjects ",,," :variableTerm facts)
-        var-info (u/build-relation :vn :variables facts)]
+        var-info (u/build-relation :variableName :variables facts)]
     (letfn [(get-var-info [vn]
               (let [var-term (-> (get var-terms vn) first)
-                    name (-> (get names vn) first)
                     descrip (-> (get descrips vn) first)
                     project (-> (get projects vn) first)
                     vars (-> (get var-info vn) first (split sep-terms))
                     variables (map transform-var-info vars)]
                 {"variableName" var-term
-                 "name" name
+                 "name" vn
                  "description" descrip
                  "project" project
                  "variables" variables }))]

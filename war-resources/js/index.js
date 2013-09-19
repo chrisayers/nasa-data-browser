@@ -76,7 +76,7 @@ function setParameters(data) {
 function getVariables() {
     $(".filterValues input[type='checkbox']").attr('checked', false);
     $('#vars').empty(); 
-    $.getJSON(variablesUrl+"?parameter="+currentParameter, setVariables);
+    $.getJSON(variablesUrl+"?parameter="+currentParameter, setVariableNames);
 }
 function keywordSearch() {
     $(".filterValues input[type='checkbox']").attr('checked', false);
@@ -93,13 +93,10 @@ function addProductsToItem(item) {
     }
     item['products']= products
 }
-function setVariables(data) {
+function setVariableNames(data) {
     filterIndex= data.filterIndex;
-    var oldVars= data.variables;
-    $.each(oldVars, function(i,v) { addProductsToItem(v); });
-    var newData= {"variables": oldVars};
     $('#compare').show();
-    $('#variables-table').html(getVariablesContent(newData));
+    $('#vars').html(getVariablesContent(data));
     activateVarTableAccordion();
     $('.filterValues input').unbind().live('click', filterVariables);
     $('a.infolink').unbind().click(infoLinkClick);
@@ -108,16 +105,17 @@ function setVariables(data) {
     $('#search-box').val('');
 }
 function activateVarTableAccordion() {
-    $(".variables-table > tbody > tr:not(.variableName)").hide();
-    $(".variables-table tr:first-child").show();
-    $(".variables-table tr.variableName").click(function(){
+    $("#variables-table > tbody > tr:not(.variableName)").hide();
+    $("#variables-table tr:first-child").show();
+    $("#variables-table tr.variableName").click(function(){
 	$(this).next().fadeToggle();
     });
 }
 function filterVariables() {
     $(".variable input[type='checkbox']").attr('checked', false);
+    $(".variableName").show();
     $(".variable").show();
-    var allVars= $(".variable").map(function() { return $(this).attr("var"); });
+    var allVars= $(".variableName").map(function() { return $(this).attr("var"); });
     var items=$(".filterValues input[type='checkbox']:checked")
 	.map(function () { return this.value; }).get();
     if (items.length > 0) {
@@ -132,7 +130,7 @@ function filterVariables() {
 	$.each(X, function(i, v) { indivFilters.push(filterIndex[v]); });
 	var compositeFilter= intersect_all(indivFilters);
 	$.each(allVars, function(i,v) { 
-	    var inFilter= ($.inArray(v, compositeFilter) > -1)
+	    var inFilter= ($.inArray(v, compositeFilter) > -1);
 	    try { if (!inFilter) { $('#varpicker-'+v).hide(); } }
 	    catch(e) { document.getElementById("varpicker-"+v).style.display="none"; }
 	});
