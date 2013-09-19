@@ -3,22 +3,35 @@
   (:require [nasa-data-browser.utils :as u]))
 
 (def var-pull (str u/prefix "
-construct { ?variableNameUri a :Variable ;
+construct { ?variableNameUri a :VariableName ;
                          :paramClass ?paramClass ;
-                         :variable ?variable ;
-                         :varName ?variableName ;
+                         :name ?variableName ;
                          :description ?label ;
                          :project ?project ;
-                         :filters ?filterObjects } where {
+                         :filters ?filterObjects ;
+                         :variables ?variables .
+} where {
  ?variableUri :parameter/rdfs:subClassOf ?paramClass ;
               :project ?projectUri ;
               :variableName ?variableNameUri ;
               rdfs:label ?label .
- ?variableNameUri rdfs:label ?variableName .
+ optional { ?variableNameUri rdfs:label ?variableLabel } .
  optional { ?projectUri rdfs:label ?projectName } .
- bind (strafter(str(?variableNameUri), '#') as ?variable) .
+ bind (coalesce(?variableLabel, ?variableNameUri) as ?variableName) .
  bind (strafter(str(?projectUri), '#') as ?projectTerm) .
  bind (coalesce(?projectName, ?projectTerm) as ?project) .
+ { select ?variableNameUri (group_concat(?varInfo; separator=',,,') as ?variables) {
+   { select distinct ?variableNameUri ?varInfo {
+
+     ?variableUri :variableName ?variableNameUri . 
+     optional { ?variableUri :dataSet ?datasetUri .
+                ?datasetUri rdfs:label ?datasetName 
+                bind (strafter(str(?datasetUri), '#') as ?datasetTerm) } 
+     bind (strafter(str(?variableUri), '#') as ?variableTerm) 
+     bind (coalesce(?datasetName, ?datasetTerm, ?variableTerm) as ?dataset) 
+     bind (concat(?variableTerm, '#', ?dataset) as ?varInfo) 
+   } order by ?dataset}
+ } group by ?variableNameUri }
  { select ?variableNameUri (group_concat(?filterObject; separator=',,,') as ?filterObjects) {
    { select distinct ?variableNameUri ?filterObject {
      ?variableUri ?filterUri ?objectUri . 
@@ -77,12 +90,14 @@ where {
 }}}
 "))
 
+(defn materialize [endpoint filepath]
+  (stash (build
+          (pull var-pull endpoint)
+          (pull param-pull endpoint)
+          (pull prod-pull endpoint))
+         filepath))
 
-(comment 
-(def endpoint "http://nasa-sesame.elasticbeanstalk.com/repositories/nasa")
-(stash (build
-        (pull var-pull endpoint)
-        (pull param-pull endpoint)
-        (pull prod-pull endpoint))
-       "/Users/ryan/compiled-test.nt")
+(comment
+(materialize "http://nasa-sesame.elasticbeanstalk.com/repositories/nasa"
+             "/Users/ryan/compiled-test.nt")
 )

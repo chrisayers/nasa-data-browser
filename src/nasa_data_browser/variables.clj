@@ -1,75 +1,71 @@
 (ns nasa-data-browser.variables
-  (:use [seabass core])
+  (:use [seabass core]
+        [clojure.string :only (split)])
   (:require [nasa-data-browser.utils :as u]))
 
 (defn var-query 
   ([parameter]
      (str u/prefix "
-select distinct ?variable ?variableName ?description ?project ?filterObjects { 
-  ?v a :Variable ;
+select distinct ?vn ?variableName ?description ?project ?filterObjects 
+                ?variables ?variableTerm { 
+  ?vn a :VariableName ;
      :paramClass :"parameter" ;
-     :varName ?variableName ;
+     :name ?variableName ;
      :description ?description ;
      :project ?project ;
-     :filters ?filterObjects .
-  bind (replace(str(?variableName), ' ', '') as ?variable) .
+     :filters ?filterObjects ;
+     :variables ?variables .
+  bind (strafter(str(?vn), '#') as ?variableTerm)
   bind (lcase(?variableName) as ?lcVarName) .
 } order by desc(?lcVarName)
 "))
   ([parameter keyword]
      (str u/prefix "
-select distinct ?variable ?variableName ?description ?project ?filterObjects { 
-  ?v a :Variable ;
+select distinct ?vn ?variableName ?description ?project ?filterObjects 
+                ?variables  ?variableTerm { 
+  ?vn a :VariableName ;
      :paramClass :"parameter" ;
-     :varName ?variableName ;
+     :name ?variableName ;
      :description ?description ;
-     :filters ?filterObjects .
-  bind (replace(str(?variableName), ' ', '') as ?variable) .
+     :project ?project ;
+     :filters ?filterObjects ;
+     :variables ?variables .
+  bind (strafter(str(?vn), '#') as ?variableTerm)
   bind (lcase(?variableName) as ?lcVarName) .
   filter(contains(lcase(?variableName), lcase('"keyword"'))) .
 } order by desc(?lcVarName)
 ")))
 
-(defn details-query [variable-name]
-     (str u/prefix "
-select distinct ?variable ?dataset ?datasetLabel {
-  ?variable :variableName :"variable-name" .
-  optional { ?variable :dataSet ?dset .
-             ?dset rdfs:label ?dsetLabel }
-  bind(coalesce(str(?dset),'') as ?dataset) .
-  bind(coalesce(?dsetLabel, 'None listed') as ?datasetLabel)
-}"))
+(def sep-term (java.util.regex.Pattern/compile "#"))
+(def sep-terms (java.util.regex.Pattern/compile ",,,"))
 
-(defn process-details [facts]
-  (let [vars (distinct (into [] (map :variable facts)))
-        datasets (u/build-relation :variable :dataset facts)
-        names (u/build-relation :dataset :datasetLabel facts)]
-    (letfn [(get-var-info [var]
-              (let [dataset (-> (get datasets var) first)
-                    dataset-name (-> (get names dataset) first)]
-                {"variable" var
-                 "datasetUri" dataset
-                 "datasetName" dataset-name}))]
-      {"variables" (map get-var-info vars)})))
-(defn get-details [variable-name endpoint]
-  (-> variable-name details-query (bounce endpoint) :data process-details))
-
+(defn transform-var-info [var-info]
+  (let [info (split var-info sep-term)]
+    {"variable" (get info 0)
+     "dataset" (get info 1)}))
+        
 (defn process-results [facts]
-  (let [vars (distinct (into [] (map :variable facts)))
-        var-names (u/build-relation :variable :variableName facts)
-        descrips (u/build-relation :variable :description facts)
-        projects (u/build-relation :variable :project facts)
-        filts (u/build-relation :filterObjects ",,," :variable facts)]
-    (letfn [(get-var-info [var]
-              (let [var-name (-> (get var-names var) first)
-                    descrip (-> (get descrips var) first)
-                    project (-> (get projects var) first)]
-                {"variable" var
-                 "variableName" var-name
+  (let [var-names (distinct (into [] (map :vn facts)))
+        var-terms (u/build-relation :vn :variableTerm facts)
+        names (u/build-relation :vn :variableName facts)
+        descrips (u/build-relation :vn :description facts)
+        projects (u/build-relation :vn :project facts)
+        filts (u/build-relation :filterObjects ",,," :variableTerm facts)
+        var-info (u/build-relation :vn :variables facts)]
+    (letfn [(get-var-info [vn]
+              (let [var-term (-> (get var-terms vn) first)
+                    name (-> (get names vn) first)
+                    descrip (-> (get descrips vn) first)
+                    project (-> (get projects vn) first)
+                    vars (-> (get var-info vn) first (split sep-terms))
+                    variables (map transform-var-info vars)]
+                {"variableName" var-term
+                 "name" name
                  "description" descrip
-                 "project" project}))]
+                 "project" project
+                 "variables" variables }))]
       {"filterIndex" filts
-       "variables" (map get-var-info vars)})))
+       "variableNames" (map get-var-info var-names)})))
 (defn get-data
   ([parameter endpoint]
      (-> parameter var-query (bounce endpoint) :data process-results))
