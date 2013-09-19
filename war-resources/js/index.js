@@ -99,12 +99,20 @@ function setVariables(data) {
     $.each(oldVars, function(i,v) { addProductsToItem(v); });
     var newData= {"variables": oldVars};
     $('#compare').show();
-    $('#vars').html(getVariablesContent(newData));
+    $('#variables-table').html(getVariablesContent(newData));
+    activateVarTableAccordion();
     $('.filterValues input').unbind().live('click', filterVariables);
     $('a.infolink').unbind().click(infoLinkClick);
     updateFilterCounts(filterIndex);
     $('#search-form').show();
     $('#search-box').val('');
+}
+function activateVarTableAccordion() {
+    $(".variables-table > tbody > tr:not(.variableName)").hide();
+    $(".variables-table tr:first-child").show();
+    $(".variables-table tr.variableName").click(function(){
+	$(this).next().fadeToggle();
+    });
 }
 function filterVariables() {
     $(".variable input[type='checkbox']").attr('checked', false);

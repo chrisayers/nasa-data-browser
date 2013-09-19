@@ -33,7 +33,6 @@
       <button id="compare">Compare</button>
     </div>
 
-
     <script id="params-template" type="text/x-handlebars-template">
       {{#each parameters}} 
       <h3>{{parameter}}</h3> 
@@ -55,9 +54,8 @@
       {{/each}} 
     </script>
 
-
     <script id="vars-template" type="text/x-handlebars-template">
-      <table id='variables'>
+      <table id='variables-table'>
 	<thead>
 	  <tr>
 	    <td>Variable/Parameter</td>
@@ -66,20 +64,26 @@
 	  </tr>
 	</thead>
 	<tbody>
-	  {{#each variables}} 
-	  <tr class='variable' id='varpicker-{{variable}}' var='{{variable}}'>
-	    <td> 
-	      <input type='checkbox' value='{{variable}}'/> 
-	      <a uuid='{{variable}}' class='infolink' href='#'>{{variableName}}</a> 
-	    </td>
+	  {{#each variableNames}}
+	  <tr class='variableName'>
+	    <td>{{variableName}}</td>
 	    <td>{{description}}</td>
 	    <td>{{project}}</td>
 	  </tr>
+	  <tr><td><table><tbody>
+		  {{#each variables}}
+		  <tr class='variable' id='varpicker-{{variable}}' var='{{variable}}'>
+		    <td> 
+		      <input type='checkbox' value='{{variable}}'/>
+		      <a uuid='{{variable}}' class='infolink' href='#'>{{datasetName}}</a> 
+		    </td>
+		  </tr>
+		  {{/each}}
+	  </tbody></table></td></tr>
 	  {{/each}} 
 	</tbody>
       </table>
     </script>
-
 
     <script id="compare-template" type="text/x-handlebars-template">
       <div>
