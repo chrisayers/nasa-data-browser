@@ -11,7 +11,8 @@ construct { ?variableNameUri a :VariableName ;
                          :filters ?filterObjects ;
                          :variables ?variables .
 } where {
- ?variableUri :parameter/rdfs:subClassOf ?paramClass ;
+ ?paramClass :properDirectSubclassOf :ScienceParameter .
+ ?variableUri :parameter/rdfs:subClassOf* ?paramClass ;
               :project ?projectUri ;
               :variableName ?variableNameUri ;
               rdfs:label ?label .
@@ -100,5 +101,5 @@ where {
 (comment
 (def dev "http://localhost:8080/openrdf-sesame/repositories/nasa")
 (def prod "http://nasa-sesame.elasticbeanstalk.com/repositories/nasa") 
-(materialize dev "/Users/ryan/compiled-test.nt")
+(materialize dev "/Users/ryan/compiled.nt")
 )
